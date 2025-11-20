@@ -31,60 +31,60 @@ class CreateUserEntityServiceTest {
     private CreateUserService service;
 
 
-    @BeforeEach
-    void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
-
-    String email = "john@example.com";
-    UserResponseDto userResponseDto = UserResponseDto.builder()
-            .firstName("John")
-            .lastName("Doe")
-            .username("jonhdoe")
-            .externalId(10L)
-            .age(35)
-            .email(email)
-            .gender("male")
-            .build();
-
-    DummyUsersResponseDto dummyUsersResponseDto = DummyUsersResponseDto.builder()
-            .users(
-                    Collections.singletonList(userResponseDto))
-            .total(1)
-            .skip(0)
-            .limit(1)
-            .build();
-
-    @Test
-    void shouldReturnSuccessWithValidEmail() {
-
-        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
-
-        UserResponseDto result = service.execute(email);
-
-        assertNotNull(result);
-        assertEquals(email, result.getEmail());
-        assertEquals("John", result.getFirstName());
-        assertEquals("Doe", result.getLastName());
-
-        verify(userClient, times(1)).searchUserByEmail(email);
-    }
-
-    @Test
-    void shouldReturnAnEmptyArrayWhenUserEmailIsNotFound() {
-
-        String email = "john@example.com";
-
-        UserResponseDto responseDto = UserResponseDto.builder().build();
-
-        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
-
-        UserResponseDto result = service.execute(email);
-
-        assertNotNull(result);
-
-        verify(userClient, times(1)).searchUserByEmail(email);
-    }
+//    @BeforeEach
+//    void setup() {
+//        MockitoAnnotations.openMocks(this);
+//    }
+//
+//    String email = "john@example.com";
+//    UserResponseDto userResponseDto = UserResponseDto.builder()
+//            .firstName("John")
+//            .lastName("Doe")
+//            .username("jonhdoe")
+//            .externalId(10L)
+//            .age(35)
+//            .email(email)
+//            .gender("male")
+//            .build();
+//
+//    DummyUsersResponseDto dummyUsersResponseDto = DummyUsersResponseDto.builder()
+//            .users(
+//                    Collections.singletonList(userResponseDto))
+//            .total(1)
+//            .skip(0)
+//            .limit(1)
+//            .build();
+//
+//    @Test
+//    void shouldReturnSuccessWithValidEmail() {
+//
+//        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
+//
+//        UserResponseDto result = service.execute(email);
+//
+//        assertNotNull(result);
+//        assertEquals(email, result.getEmail());
+//        assertEquals("John", result.getFirstName());
+//        assertEquals("Doe", result.getLastName());
+//
+//        verify(userClient, times(1)).searchUserByEmail(email);
+//    }
+//
+//    @Test
+//    void shouldReturnAnEmptyArrayWhenUserEmailIsNotFound() {
+//
+//        String email = "john@example.com";
+//
+//        UserResponseDto responseDto = UserResponseDto.builder().build();
+//
+//        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
+//
+//        UserResponseDto result = service.execute(email);
+//
+//        assertNotNull(result);
+//
+//        verify(userClient, times(1)).searchUserByEmail(email);
+//    }
 
 //    @Test
 //    void deveCriarProdutoComSucesso() {

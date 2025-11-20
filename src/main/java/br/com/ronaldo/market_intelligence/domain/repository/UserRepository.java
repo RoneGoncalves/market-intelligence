@@ -8,6 +8,7 @@ import java.util.Optional;
 public interface UserRepository {
     List<UserEntity> findAll();
     Optional<UserEntity> findById(Long id);
+    Optional<UserEntity> findByEmail(String email);
     UserEntity save(UserEntity user);
     void deleteById(Long id);
 }

@@ -48,13 +48,6 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
-        <!-- LOMBOK -->
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-
         <!-- H2 DATABASE -->
         <dependency>
             <groupId>com.h2database</groupId>
@@ -108,7 +101,7 @@
     <build>
         <plugins>
 
-            <!-- COMPILADOR (Java 21 + Lombok + MapStruct) -->
+            <!-- COMPILADOR (Java 21 + MapStruct) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -118,13 +111,6 @@
                     <target>21</target>
 
                     <annotationProcessorPaths>
-                        <!-- Lombok -->
-                        <path>
-                            <groupId>org.projectlombok</groupId>
-                            <artifactId>lombok</artifactId>
-                            <version>1.18.32</version>
-                        </path>
-
                         <!-- MapStruct -->
                         <path>
                             <groupId>org.mapstruct</groupId>

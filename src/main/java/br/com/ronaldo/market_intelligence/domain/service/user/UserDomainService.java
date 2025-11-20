@@ -26,6 +26,10 @@ public class UserDomainService {
                 );
     }
 
+    public boolean buscarPorEmail(String email) {
+        return repository.findByEmail(email).isPresent();
+    }
+
     public List<UserEntity> listarTodos() {
         return repository.findAll();
     }

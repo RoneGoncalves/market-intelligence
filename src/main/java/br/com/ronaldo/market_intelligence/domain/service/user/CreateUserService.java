@@ -1,28 +1,62 @@
 package br.com.ronaldo.market_intelligence.domain.service.user;
 
 import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
+import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
+import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
+import br.com.ronaldo.market_intelligence.domain.exception.UserExistsException;
+import br.com.ronaldo.market_intelligence.domain.exception.UserNotFoundException;
 import br.com.ronaldo.market_intelligence.infrastructure.client.UserClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
 public class CreateUserService {
 
     private final UserClient userClient;
     private final UserDomainService domainService;
     private final UserMapper mapper;
 
-    public UserResponseDto execute(String email) {
+    public CreateUserService(UserClient userClient, UserDomainService domainService, UserMapper mapper) {
+        this.userClient = userClient;
+        this.domainService = domainService;
+        this.mapper = mapper;
+    }
 
-        DummyUsersResponseDto responseDto = userClient.searchUserByEmail(email);
-        UserResponseDto userResponseDto = responseDto.getUsers().getFirst();
-        var userMapped = mapper.toEntity(userResponseDto);
+    public UserResponseDto execute(UserRequestDto userRequestDto) {
 
-        domainService.salvar(userMapped);
+        if (domainService.buscarPorEmail(userRequestDto.getEmail())) {
+//            log.warn("Usuário já cadastrado localmente para o email: {}", userRequestDto.getEmail());
+            throw new UserExistsException("Usuário já cadastrado localmente para o email: " + userRequestDto.getEmail());
+        }
 
-        return userResponseDto;
+//        log.info("[CreateUserService] - REQUEST DATA: {}", userRequestDto);
+
+        try {
+            DummyUsersResponseDto responseDto = userClient.searchUserByEmail(userRequestDto.getEmail());
+//            log.info("[UserClient] - RESPONSE DATA: {}: totalUsers={}", userRequestDto.getEmail(), responseDto.getTotal());
+
+            if (responseDto.getUsers() == null || responseDto.getUsers().isEmpty()) {
+
+//                log.warn("Nenhum usuário cadastrado no DummyJSON para o email: {}", userRequestDto.getEmail());
+                throw new UserNotFoundException("Nenhum usuário cadastrado para o email: " + userRequestDto.getEmail());
+            }
+
+            UserResponseDto userResponseDto = responseDto.getUsers().getFirst();
+
+            var userEntity = mapper.toEntity(userResponseDto);
+            domainService.salvar(userEntity);
+
+//            log.info("Usuário salvo no banco local. ID interno: {}", userEntity.getId());
+
+            return userResponseDto;
+
+        } catch (feign.FeignException error) {
+//            log.error("Erro ao consultar a API DummyJSON: status={} message={}",error.status(), error.getMessage())
+
+            throw new ExternalApiException(
+                    "Erro ao consultar a API DummyJSON: " + error.status(), error
+            );
+        }
     }
 }
