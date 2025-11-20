@@ -1,9 +1,10 @@
-CREATE TABLE produto (
+CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(255) NOT NULL,
-    descricao VARCHAR(500),
-    preco DECIMAL(10,2) NOT NULL,
-    categoria VARCHAR(100),
-    origem VARCHAR(50) DEFAULT 'LOCAL',
-    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    external_id BIGINT,
+    user_name VARCHAR(100) NOT NULL,
+    email VARCHAR(150) NOT NULL UNIQUE,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    age INT,
+    gender VARCHAR(20)
 );
