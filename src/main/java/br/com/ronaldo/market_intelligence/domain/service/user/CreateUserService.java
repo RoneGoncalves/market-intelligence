@@ -6,53 +6,55 @@ import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserExistsException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserNotFoundException;
+import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 import br.com.ronaldo.market_intelligence.infrastructure.client.UserClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class CreateUserService {
+    private static final Logger log = LoggerFactory.getLogger(CreateUserService.class);
 
     private final UserClient userClient;
-    private final UserDomainService domainService;
     private final UserMapper mapper;
+    private final UserRepository repository;
 
-    public CreateUserService(UserClient userClient, UserDomainService domainService, UserMapper mapper) {
+    public CreateUserService(UserClient userClient, UserMapper mapper, UserRepository repository) {
         this.userClient = userClient;
-        this.domainService = domainService;
         this.mapper = mapper;
+        this.repository = repository;
     }
 
     public UserResponseDto execute(UserRequestDto userRequestDto) {
 
-        if (domainService.buscarPorEmail(userRequestDto.getEmail())) {
-//            log.warn("Usuário já cadastrado localmente para o email: {}", userRequestDto.getEmail());
+        if (repository.findByEmail(userRequestDto.getEmail()).isPresent()) {
+            log.warn("[CreateUserService] - Usuário já cadastrado localmente para o email: {}", userRequestDto.getEmail());
             throw new UserExistsException("Usuário já cadastrado localmente para o email: " + userRequestDto.getEmail());
         }
 
-//        log.info("[CreateUserService] - REQUEST DATA: {}", userRequestDto);
-
         try {
             DummyUsersResponseDto responseDto = userClient.searchUserByEmail(userRequestDto.getEmail());
-//            log.info("[UserClient] - RESPONSE DATA: {}: totalUsers={}", userRequestDto.getEmail(), responseDto.getTotal());
+            log.info("[UserClient] - CLIENT RESPONSE DATA: {}: totalUsers={}", userRequestDto.getEmail(), responseDto.getTotal());
 
             if (responseDto.getUsers() == null || responseDto.getUsers().isEmpty()) {
 
-//                log.warn("Nenhum usuário cadastrado no DummyJSON para o email: {}", userRequestDto.getEmail());
+                log.warn("[UserClient] - Nenhum usuário cadastrado no DummyJSON para o email: {}", userRequestDto.getEmail());
                 throw new UserNotFoundException("Nenhum usuário cadastrado para o email: " + userRequestDto.getEmail());
             }
 
             UserResponseDto userResponseDto = responseDto.getUsers().getFirst();
 
             var userEntity = mapper.toEntity(userResponseDto);
-            domainService.salvar(userEntity);
+            repository.save(userEntity);
 
-//            log.info("Usuário salvo no banco local. ID interno: {}", userEntity.getId());
+            log.info("[UserEntity] - Usuário salvo no banco local. ID interno: {}", userEntity.getId());
 
             return userResponseDto;
 
         } catch (feign.FeignException error) {
-//            log.error("Erro ao consultar a API DummyJSON: status={} message={}",error.status(), error.getMessage())
+            log.error("Erro ao consultar a API DummyJSON: status={} message={}",error.status(), error.getMessage());
 
             throw new ExternalApiException(
                     "Erro ao consultar a API DummyJSON: " + error.status(), error

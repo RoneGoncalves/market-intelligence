@@ -1,25 +1,35 @@
 package br.com.ronaldo.market_intelligence.domain.service.user;
 
 import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
+import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
+import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
+import br.com.ronaldo.market_intelligence.domain.exception.UserExistsException;
+import br.com.ronaldo.market_intelligence.domain.exception.UserNotFoundException;
+import br.com.ronaldo.market_intelligence.domain.model.UserEntity;
+import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 import br.com.ronaldo.market_intelligence.infrastructure.client.UserClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
+import feign.FeignException;
+import feign.Request;
+import feign.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class CreateUserEntityServiceTest {
 
     @Mock
-    private UserDomainService domainService;
+    private UserRepository repository;
 
     @Mock
     private UserMapper mapper;
@@ -30,111 +40,110 @@ class CreateUserEntityServiceTest {
     @InjectMocks
     private CreateUserService service;
 
+    private final String email = "john@example.com";
 
-//    @BeforeEach
-//    void setup() {
-//        MockitoAnnotations.openMocks(this);
-//    }
-//
-//    String email = "john@example.com";
-//    UserResponseDto userResponseDto = UserResponseDto.builder()
-//            .firstName("John")
-//            .lastName("Doe")
-//            .username("jonhdoe")
-//            .externalId(10L)
-//            .age(35)
-//            .email(email)
-//            .gender("male")
-//            .build();
-//
-//    DummyUsersResponseDto dummyUsersResponseDto = DummyUsersResponseDto.builder()
-//            .users(
-//                    Collections.singletonList(userResponseDto))
-//            .total(1)
-//            .skip(0)
-//            .limit(1)
-//            .build();
-//
-//    @Test
-//    void shouldReturnSuccessWithValidEmail() {
-//
-//        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
-//
-//        UserResponseDto result = service.execute(email);
-//
-//        assertNotNull(result);
-//        assertEquals(email, result.getEmail());
-//        assertEquals("John", result.getFirstName());
-//        assertEquals("Doe", result.getLastName());
-//
-//        verify(userClient, times(1)).searchUserByEmail(email);
-//    }
-//
-//    @Test
-//    void shouldReturnAnEmptyArrayWhenUserEmailIsNotFound() {
-//
-//        String email = "john@example.com";
-//
-//        UserResponseDto responseDto = UserResponseDto.builder().build();
-//
-//        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
-//
-//        UserResponseDto result = service.execute(email);
-//
-//        assertNotNull(result);
-//
-//        verify(userClient, times(1)).searchUserByEmail(email);
-//    }
+    private UserResponseDto userResponseDto;
+    private DummyUsersResponseDto dummyUsersResponseDto;
 
-//    @Test
-//    void deveCriarProdutoComSucesso() {
-//        var request = UserRequestDto.builder()
-//                .nome("iPhone 16")
-//                .descricao("Smartphone Apple última geração")
-//                .preco(8999.99)
-//                .categoria("Celular")
-//                .origem("EUA")
-//                .build();
-//
-//        var entity = new User();
-//        entity.setNome("iPhone 16");
-//        entity.setDescricao("Smartphone Apple última geração");
-//        entity.setPreco(8999.99);
-//        entity.setCategoria("Celular");
-//        entity.setOrigem("EUA");
-//
-//        var savedEntity = new User();
-//        savedEntity.setId(1L);
-//        savedEntity.setNome("iPhone 16");
-//        savedEntity.setDescricao("Smartphone Apple última geração");
-//        savedEntity.setPreco(8999.99);
-//        savedEntity.setCategoria("Celular");
-//        savedEntity.setOrigem("EUA");
-//
-//        var response = UserResponseDto.builder()
-//                .id(1L)
-//                .nome("iPhone 16")
-//                .descricao("Smartphone Apple última geração")
-//                .preco(8999.99)
-//                .categoria("Celular")
-//                .origem("EUA")
-//                .build();
-//
-//        when(mapper.toEntity(request)).thenReturn(entity);
-//        when(domainService.salvar(entity)).thenReturn(savedEntity);
-//        when(mapper.toResponse(savedEntity)).thenReturn(response);
-//
-//        var result = createUserService.execute(request);
-//
-//        assertThat(result).isNotNull();
-//        assertThat(result.getId()).isEqualTo(1L);
-//        assertThat(result.getNome()).isEqualTo("iPhone 16");
-//        assertThat(result.getCategoria()).isEqualTo("Celular");
-//        assertThat(result.getPreco()).isEqualTo(8999.99);
-//
-//        verify(mapper).toEntity(request);
-//        verify(domainService).salvar(entity);
-//        verify(mapper).toResponse(savedEntity);
-//        verifyNoMoreInteractions(mapper, domainService);
-//    }
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.openMocks(this);
+
+        userResponseDto = new UserResponseDto();
+        userResponseDto.setFirstName("John");
+        userResponseDto.setLastName("Doe");
+        userResponseDto.setUsername("jonhdoe");
+        userResponseDto.setExternalId(10L);
+        userResponseDto.setAge(35);
+        userResponseDto.setEmail(email);
+        userResponseDto.setGender("male");
+
+
+        dummyUsersResponseDto = new DummyUsersResponseDto();
+        dummyUsersResponseDto.setUsers(Collections.singletonList(userResponseDto));
+        dummyUsersResponseDto.setTotal(1);
+        dummyUsersResponseDto.setSkip(0);
+        dummyUsersResponseDto.setLimit(1);
+
+    }
+
+    @Test
+    void shouldReturnSuccessWithValidEmail() {
+
+        UserRequestDto request = new UserRequestDto(email);
+
+        when(repository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
+        when(mapper.toEntity(userResponseDto)).thenReturn(new UserEntity());
+
+        UserResponseDto result = service.execute(request);
+
+        assertNotNull(result);
+        assertEquals(email, result.getEmail());
+        assertEquals("John", result.getFirstName());
+
+        verify(userClient, times(1)).searchUserByEmail(email);
+        verify(repository, times(1)).save(any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserAlreadyExists() {
+
+        UserRequestDto request = new UserRequestDto(email);
+
+        when(repository.findByEmail(email))
+                .thenReturn(Optional.of(new UserEntity()));
+
+        assertThrows(UserExistsException.class, () -> service.execute(request));
+
+        verify(userClient, never()).searchUserByEmail(any());
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUserNotFoundInExternalApi() {
+
+        UserRequestDto request = new UserRequestDto(email);
+
+        when(repository.findByEmail(email)).thenReturn(Optional.empty());
+        when(userClient.searchUserByEmail(email))
+                .thenReturn(new DummyUsersResponseDto(Collections.emptyList(), 0, 0, 0));
+
+        assertThrows(UserNotFoundException.class, () -> service.execute(request));
+
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowExternalApiExceptionWhenFeignFails() {
+
+        UserRequestDto request = new UserRequestDto(email);
+
+        when(repository.findByEmail(email)).thenReturn(Optional.empty());
+
+        Request req = Request.create(
+                Request.HttpMethod.GET,
+                "/users/search",
+                Collections.emptyMap(),
+                null,
+                StandardCharsets.UTF_8
+        );
+
+        FeignException fakeException =
+                FeignException.errorStatus(
+                        "searchUserByEmail",
+                        Response.builder()
+                                .status(500)
+                                .reason("Internal Server Error")
+                                .request(req)
+                                .headers(Collections.emptyMap())
+                                .build()
+                );
+
+        when(userClient.searchUserByEmail(email)).thenThrow(fakeException);
+
+        assertThrows(ExternalApiException.class, () -> service.execute(request));
+
+        verify(repository, never()).save(any());
+    }
 }
