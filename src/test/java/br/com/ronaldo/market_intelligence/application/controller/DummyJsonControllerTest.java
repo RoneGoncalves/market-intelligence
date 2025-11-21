@@ -2,11 +2,11 @@ package br.com.ronaldo.market_intelligence.application.controller;
 import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
+import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
-import br.com.ronaldo.market_intelligence.domain.model.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 
-import br.com.ronaldo.market_intelligence.infrastructure.client.UserClient;
+import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class UserControllerTest {
+class DummyJsonControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -43,7 +43,7 @@ class UserControllerTest {
     private UserRepository repository;
 
     @MockBean
-    private UserClient userClient;
+    private DummyJsonClient dummyJsonClient;
 
     @MockBean
     private UserMapper mapper;
@@ -60,7 +60,7 @@ class UserControllerTest {
                 "John",
                 "Doe",
                 "johndoe",
-                email,
+                "john@example.com",
                 "male",
                 45
         );
@@ -74,13 +74,13 @@ class UserControllerTest {
         when(repository.findByEmail(email))
                 .thenReturn(Optional.empty());
 
-        when(userClient.searchUserByEmail(email))
+        when(dummyJsonClient.searchUserByEmail(email))
                 .thenReturn(dummyResponse);
 
         when(mapper.toEntity(externalUser))
                 .thenReturn(new UserEntity());
 
-        mockMvc.perform(post("/users")
+        mockMvc.perform(post("/api/create_user")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -88,7 +88,7 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.firstName").value("John"))
                 .andExpect(jsonPath("$.lastName").value("Doe"));
 
-        verify(userClient, times(1)).searchUserByEmail(email);
+        verify(dummyJsonClient, times(1)).searchUserByEmail(email);
         verify(repository, times(1)).save(any());
     }
 
@@ -102,7 +102,7 @@ class UserControllerTest {
                 .thenReturn(Optional.of(new UserEntity()));
 
         mockMvc.perform(
-                        post("/users")
+                        post("/api/create_user")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isConflict());
@@ -122,10 +122,10 @@ class UserControllerTest {
         empty.setSkip(0);
         empty.setLimit(0);
 
-        when(userClient.searchUserByEmail(email)).thenReturn(empty);
+        when(dummyJsonClient.searchUserByEmail(email)).thenReturn(empty);
 
         mockMvc.perform(
-                        post("/users")
+                        post("/api/create_users")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
@@ -139,11 +139,11 @@ class UserControllerTest {
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
 
-        when(userClient.searchUserByEmail(email))
+        when(dummyJsonClient.searchUserByEmail(email))
                 .thenThrow(new ExternalApiException("dummy fail", null));
 
         mockMvc.perform(
-                        post("/users")
+                        post("/api/create_user")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadGateway());

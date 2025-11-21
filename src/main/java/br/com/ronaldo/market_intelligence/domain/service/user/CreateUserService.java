@@ -7,7 +7,7 @@ import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserExistsException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserNotFoundException;
 import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
-import br.com.ronaldo.market_intelligence.infrastructure.client.UserClient;
+import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
 public class CreateUserService {
     private static final Logger log = LoggerFactory.getLogger(CreateUserService.class);
 
-    private final UserClient userClient;
+    private final DummyJsonClient dummyJsonClient;
     private final UserMapper mapper;
     private final UserRepository repository;
 
-    public CreateUserService(UserClient userClient, UserMapper mapper, UserRepository repository) {
-        this.userClient = userClient;
+    public CreateUserService(DummyJsonClient dummyJsonClient, UserMapper mapper, UserRepository repository) {
+        this.dummyJsonClient = dummyJsonClient;
         this.mapper = mapper;
         this.repository = repository;
     }
@@ -35,7 +35,7 @@ public class CreateUserService {
         }
 
         try {
-            DummyUsersResponseDto responseDto = userClient.searchUserByEmail(userRequestDto.getEmail());
+            DummyUsersResponseDto responseDto = dummyJsonClient.searchUserByEmail(userRequestDto.getEmail());
             log.info("[UserClient] - CLIENT RESPONSE DATA: {}: totalUsers={}", userRequestDto.getEmail(), responseDto.getTotal());
 
             if (responseDto.getUsers() == null || responseDto.getUsers().isEmpty()) {

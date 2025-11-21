@@ -1,7 +1,7 @@
 package br.com.ronaldo.market_intelligence.infrastructure.mapper;
 
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
-import br.com.ronaldo.market_intelligence.domain.model.UserEntity;
+import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -42,7 +42,7 @@ class UserMapperTest {
         assertEquals(dto.getGender(), entity.getGender());
         assertEquals(dto.getAge(), entity.getAge());
 
-        assertEquals(dto.getExternalId().toString(), entity.getExternalId());
+        assertEquals(dto.getExternalId(), entity.getExternalId());
     }
 
     @Test

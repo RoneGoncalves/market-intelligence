@@ -1,6 +1,6 @@
 package br.com.ronaldo.market_intelligence.domain.repository;
 
-import br.com.ronaldo.market_intelligence.domain.model.UserEntity;
+import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 
 import java.util.List;
 import java.util.Optional;

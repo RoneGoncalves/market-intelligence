@@ -3,12 +3,12 @@ package br.com.ronaldo.market_intelligence.domain.service.user;
 import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
+import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserExistsException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserNotFoundException;
-import br.com.ronaldo.market_intelligence.domain.model.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
-import br.com.ronaldo.market_intelligence.infrastructure.client.UserClient;
+import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
 import feign.FeignException;
 import feign.Request;
@@ -35,7 +35,7 @@ class CreateUserEntityServiceTest {
     private UserMapper mapper;
 
     @Mock
-    private UserClient userClient;
+    private DummyJsonClient dummyJsonClient;
 
     @InjectMocks
     private CreateUserService service;
@@ -73,7 +73,7 @@ class CreateUserEntityServiceTest {
         UserRequestDto request = new UserRequestDto(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
-        when(userClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
+        when(dummyJsonClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
         when(mapper.toEntity(userResponseDto)).thenReturn(new UserEntity());
 
         UserResponseDto result = service.execute(request);
@@ -82,7 +82,7 @@ class CreateUserEntityServiceTest {
         assertEquals(email, result.getEmail());
         assertEquals("John", result.getFirstName());
 
-        verify(userClient, times(1)).searchUserByEmail(email);
+        verify(dummyJsonClient, times(1)).searchUserByEmail(email);
         verify(repository, times(1)).save(any());
     }
 
@@ -96,7 +96,7 @@ class CreateUserEntityServiceTest {
 
         assertThrows(UserExistsException.class, () -> service.execute(request));
 
-        verify(userClient, never()).searchUserByEmail(any());
+        verify(dummyJsonClient, never()).searchUserByEmail(any());
         verify(repository, never()).save(any());
     }
 
@@ -106,7 +106,7 @@ class CreateUserEntityServiceTest {
         UserRequestDto request = new UserRequestDto(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
-        when(userClient.searchUserByEmail(email))
+        when(dummyJsonClient.searchUserByEmail(email))
                 .thenReturn(new DummyUsersResponseDto(Collections.emptyList(), 0, 0, 0));
 
         assertThrows(UserNotFoundException.class, () -> service.execute(request));
@@ -140,7 +140,7 @@ class CreateUserEntityServiceTest {
                                 .build()
                 );
 
-        when(userClient.searchUserByEmail(email)).thenThrow(fakeException);
+        when(dummyJsonClient.searchUserByEmail(email)).thenThrow(fakeException);
 
         assertThrows(ExternalApiException.class, () -> service.execute(request));
 

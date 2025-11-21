@@ -1,4 +1,4 @@
-package br.com.ronaldo.market_intelligence.domain.model;
+package br.com.ronaldo.market_intelligence.domain.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,7 +19,7 @@ public class UserEntity {
     private String email;
 
     @Column(name = "external_id")
-    private String externalId;
+    private Long externalId;
 
     @Column(name = "first_name")
     private String firstName;
@@ -30,9 +30,10 @@ public class UserEntity {
     @Column(name = "user_name")
     private String username;
 
-    public UserEntity() {}
+    public UserEntity() {
+    }
 
-    public UserEntity(Long id, Integer age, String email, String externalId, String firstName, String lastName, String gender, String username) {
+    public UserEntity(Long id, Integer age, String email, Long externalId, String firstName, String lastName, String gender, String username) {
         this.id = id;
         this.age = age;
         this.email = email;
@@ -67,11 +68,11 @@ public class UserEntity {
         this.email = email;
     }
 
-    public String getExternalId() {
+    public Long getExternalId() {
         return externalId;
     }
 
-    public void setExternalId(String externalId) {
+    public void setExternalId(Long externalId) {
         this.externalId = externalId;
     }
 
