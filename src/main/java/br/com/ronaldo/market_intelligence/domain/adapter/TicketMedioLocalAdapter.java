@@ -44,7 +44,6 @@ public class TicketMedioLocalAdapter {
             return dto;
         }
 
-        // 3 — Calcular valores
         int totalCarts = cartsLocais.size();
 
         double somaTotal = cartsLocais.stream().mapToDouble(CartModel::getTotal).sum();
@@ -63,7 +62,6 @@ public class TicketMedioLocalAdapter {
                 .min()
                 .orElse(0.0);
 
-        // 4 — Preencher DTO
         dto.setTotalCarts(totalCarts);
         dto.setTicketMedioLocal(ticketMedio);
         dto.setTicketMedioDescontadoLocal(ticketMedioDescontado);

@@ -1,6 +1,6 @@
 package br.com.ronaldo.market_intelligence.domain.service.user;
 
-import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
+import br.com.ronaldo.market_intelligence.domain.model.DummyUsersResponseModel;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
@@ -43,7 +43,7 @@ class CreateUserEntityServiceTest {
     private final String email = "john@example.com";
 
     private UserResponseDto userResponseDto;
-    private DummyUsersResponseDto dummyUsersResponseDto;
+    private DummyUsersResponseModel dummyUsersResponseModel;
 
     @BeforeEach
     void setup() {
@@ -59,11 +59,11 @@ class CreateUserEntityServiceTest {
         userResponseDto.setGender("male");
 
 
-        dummyUsersResponseDto = new DummyUsersResponseDto();
-        dummyUsersResponseDto.setUsers(Collections.singletonList(userResponseDto));
-        dummyUsersResponseDto.setTotal(1);
-        dummyUsersResponseDto.setSkip(0);
-        dummyUsersResponseDto.setLimit(1);
+        dummyUsersResponseModel = new DummyUsersResponseModel();
+        dummyUsersResponseModel.setUsers(Collections.singletonList(userResponseDto));
+        dummyUsersResponseModel.setTotal(1);
+        dummyUsersResponseModel.setSkip(0);
+        dummyUsersResponseModel.setLimit(1);
 
     }
 
@@ -73,7 +73,7 @@ class CreateUserEntityServiceTest {
         UserRequestDto request = new UserRequestDto(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
-        when(dummyJsonClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseDto);
+        when(dummyJsonClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseModel);
         when(mapper.toEntity(userResponseDto)).thenReturn(new UserEntity());
 
         UserResponseDto result = service.execute(request);
@@ -107,7 +107,7 @@ class CreateUserEntityServiceTest {
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
         when(dummyJsonClient.searchUserByEmail(email))
-                .thenReturn(new DummyUsersResponseDto(Collections.emptyList(), 0, 0, 0));
+                .thenReturn(new DummyUsersResponseModel(Collections.emptyList(), 0, 0, 0));
 
         assertThrows(UserNotFoundException.class, () -> service.execute(request));
 

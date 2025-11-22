@@ -9,7 +9,6 @@ import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioLocalAdapter
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMapper;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class TicketMedioService {
     private static final Logger log = LoggerFactory.getLogger(TicketMedioService.class);
-    private ObjectMapper objectMapper;
 
     private final DummyJsonClient dummyJsonClient;
     private final TicketMedioAdapter dummyAdapter;

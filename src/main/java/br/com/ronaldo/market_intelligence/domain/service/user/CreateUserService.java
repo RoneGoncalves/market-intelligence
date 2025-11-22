@@ -1,6 +1,6 @@
 package br.com.ronaldo.market_intelligence.domain.service.user;
 
-import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
+import br.com.ronaldo.market_intelligence.domain.model.DummyUsersResponseModel;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
@@ -35,7 +35,7 @@ public class CreateUserService {
         }
 
         try {
-            DummyUsersResponseDto responseDto = dummyJsonClient.searchUserByEmail(userRequestDto.getEmail());
+            DummyUsersResponseModel responseDto = dummyJsonClient.searchUserByEmail(userRequestDto.getEmail());
             log.info("[UserClient] - CLIENT REQUEST DATA: {}", userRequestDto.getEmail());
 
             if (responseDto.getUsers() == null || responseDto.getUsers().isEmpty()) {

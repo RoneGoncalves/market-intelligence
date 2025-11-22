@@ -2,6 +2,7 @@ package br.com.ronaldo.market_intelligence.application.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
+@Schema(description = "Busca informções sobre ticket médio no DummyJSON e na base local")
 public class TicketMedioResponseDto {
 
     @Schema

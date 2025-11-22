@@ -1,10 +1,12 @@
 package br.com.ronaldo.market_intelligence.application.controller;
 
+import br.com.ronaldo.market_intelligence.application.dto.BestSellingProductDto;
 import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
 import br.com.ronaldo.market_intelligence.domain.model.TicketMedioLocalModel;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioService;
+import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductService;
 import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserService;
 import br.com.ronaldo.market_intelligence.domain.service.user.DeleteUserService;
 import jakarta.validation.Valid;
@@ -29,11 +31,13 @@ public class DummyJsonController {
     private final CreateUserService createUserService;
     private final TicketMedioService ticketMedioService;
     private final DeleteUserService deleteUserService;
+    private final BestSellingProductService productService;
 
-    public DummyJsonController(CreateUserService createUserService, TicketMedioService ticketMedioService, DeleteUserService deleteUserService) {
+    public DummyJsonController(CreateUserService createUserService, TicketMedioService ticketMedioService, DeleteUserService deleteUserService, BestSellingProductService productService) {
         this.createUserService = createUserService;
         this.ticketMedioService = ticketMedioService;
         this.deleteUserService = deleteUserService;
+        this.productService = productService;
     }
 
     @PostMapping("/create_user")
@@ -58,6 +62,14 @@ public class DummyJsonController {
         log.info("[DummyJsonController] [GET] Enviando request ticket médio...");
 
         TicketMedioResponseDto response = ticketMedioService.execute();
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/product")
+    public ResponseEntity<BestSellingProductDto> getBestSellingProduct() {
+        log.info("[DummyJsonController] [GET] Enviando request best selling product...");
+
+        BestSellingProductDto response = productService.execute();
         return ResponseEntity.ok(response);
     }
 }

@@ -1,19 +1,20 @@
-package br.com.ronaldo.market_intelligence.application.dto;
+package br.com.ronaldo.market_intelligence.domain.model;
 
+import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.util.List;
 
 @Schema(description = "Objeto retornado nas respostas da API de produtos")
-public class DummyUsersResponseDto {
+public class DummyUsersResponseModel {
     private List<UserResponseDto> users;
     private int total;
     private int skip;
     private int limit;
 
-    public DummyUsersResponseDto() {}
+    public DummyUsersResponseModel() {}
 
-    public DummyUsersResponseDto(List<UserResponseDto> users, int total, int skip, int limit) {
+    public DummyUsersResponseModel(List<UserResponseDto> users, int total, int skip, int limit) {
         this.users = users;
         this.total = total;
         this.skip = skip;

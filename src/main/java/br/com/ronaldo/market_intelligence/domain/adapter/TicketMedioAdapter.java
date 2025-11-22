@@ -47,7 +47,6 @@ public class TicketMedioAdapter {
                 .min()
                 .orElse(0.0);
 
-        // Preencher DTO
         responseDto.setDummyTotalCarts(totalCarts);
         responseDto.setDummyTicketMedio(ticketMedio);
         responseDto.setDummyTicketMedioDescontado(ticketMedioDescontado);

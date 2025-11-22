@@ -1,6 +1,6 @@
 package br.com.ronaldo.market_intelligence.application.controller;
 
-import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
+import br.com.ronaldo.market_intelligence.domain.model.DummyUsersResponseModel;
 import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
@@ -15,8 +15,6 @@ import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMappe
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.persistence.Entity;
-import org.h2.engine.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -80,7 +78,7 @@ class DummyJsonControllerTest {
                 45
         );
 
-        DummyUsersResponseDto dummyResponse = new DummyUsersResponseDto();
+        DummyUsersResponseModel dummyResponse = new DummyUsersResponseModel();
         dummyResponse.setUsers(Collections.singletonList(externalUser));
         dummyResponse.setTotal(1);
         dummyResponse.setSkip(0);
@@ -131,7 +129,7 @@ class DummyJsonControllerTest {
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
 
-        DummyUsersResponseDto empty = new DummyUsersResponseDto();
+        DummyUsersResponseModel empty = new DummyUsersResponseModel();
         empty.setUsers(Collections.emptyList());
         empty.setTotal(0);
         empty.setSkip(0);
