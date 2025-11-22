@@ -1,16 +1,28 @@
 package br.com.ronaldo.market_intelligence.application.controller;
+
 import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
+import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
+import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioAdapter;
+import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioInsightAdapter;
+import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioLocalAdapter;
 import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
+import br.com.ronaldo.market_intelligence.domain.model.CartListModel;
+import br.com.ronaldo.market_intelligence.domain.model.CartModel;
 import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 
+import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioService;
+import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserService;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
+import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMapper;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +30,10 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +44,8 @@ import static org.mockito.Mockito.times;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -47,6 +64,13 @@ class DummyJsonControllerTest {
 
     @MockBean
     private UserMapper mapper;
+
+    @MockBean
+    private TicketMedioMapper ticketMedioMapper;
+
+    @InjectMocks
+    private TicketMedioService ticketMedioService;
+
 
     @Test
     void shouldCreateUserSuccessfully() throws Exception {
@@ -146,6 +170,19 @@ class DummyJsonControllerTest {
                         post("/api/create_user")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void shouldReturn502WhenTicketMedioExternalApiFails() throws Exception {
+
+        when(dummyJsonClient.getCarts())
+                .thenThrow(new ExternalApiException("dummy fail", null));
+
+        mockMvc.perform(
+                        get("/api/ticket_medio")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
                 .andExpect(status().isBadGateway());
     }
 }

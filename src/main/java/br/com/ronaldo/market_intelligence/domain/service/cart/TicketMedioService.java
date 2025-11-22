@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class TicketMedioService {
-    private static final Logger log = LoggerFactory.getLogger(CreateUserService.class);
+    private static final Logger log = LoggerFactory.getLogger(TicketMedioService.class);
     private ObjectMapper objectMapper;
 
     private final DummyJsonClient dummyJsonClient;
