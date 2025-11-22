@@ -1,23 +1,48 @@
-package br.com.ronaldo.market_intelligence.domain.model;
+package br.com.ronaldo.market_intelligence.application.dto;
 
-public class TicketMedioResponseModel {
+import io.swagger.v3.oas.annotations.media.Schema;
 
+public class TicketMedioResponseDto {
+
+    @Schema
     private Integer dummyTotalCart;
+
+    @Schema
     private String dummyTicketMedio;
+
+    @Schema
     private String dummyTicketMedioComDesconto;
+
+    @Schema
     private String dummyMaiorTicket;
+
+    @Schema
     private String dummyMenorTicket;
+
+    @Schema
     private Integer localTotalCart;
+
+    @Schema
     private String localTicketMedio;
+
+    @Schema
     private String localTicketMedioDescontado;
+
+    @Schema
     private String localMaiorTicket;
+
+    @Schema
     private String localMenorTicket;
+
+    @Schema
     private String insightTicketMedio;
+
+    @Schema
     private String insightTicketMedioDescontado;
 
-    public TicketMedioResponseModel() {}
+    public TicketMedioResponseDto() {}
 
-    public TicketMedioResponseModel(
+    public TicketMedioResponseDto(
             Integer dummyTotalCart, String dummyTicketMedio, String dummyTicketMedioComDesconto, String dummyMaiorTicket,
             String dummyMenorTicket, Integer localTotalCart, String localTicketMedio, String localTicketMedioDescontado,
             String localMaiorTicket, String localMenorTicket, String insightTicketMedio, String insightTicketMedioDescontado) {

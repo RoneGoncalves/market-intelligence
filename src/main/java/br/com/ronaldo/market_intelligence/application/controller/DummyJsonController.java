@@ -1,5 +1,6 @@
 package br.com.ronaldo.market_intelligence.application.controller;
 
+import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
 import br.com.ronaldo.market_intelligence.domain.model.TicketMedioLocalModel;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
@@ -37,10 +38,10 @@ public class DummyJsonController {
     }
 
     @GetMapping("/ticket_medio")
-    public ResponseEntity<TicketMedioLocalModel> getTicketMedio() {
+    public ResponseEntity<TicketMedioResponseDto> getTicketMedio() {
         log.info("[DummyJsonController] Enviando request ticket médio...");
 
-        TicketMedioLocalModel response = ticketMedioService.execute();
+        TicketMedioResponseDto response = ticketMedioService.execute();
         return ResponseEntity.ok(response);
     }
 }

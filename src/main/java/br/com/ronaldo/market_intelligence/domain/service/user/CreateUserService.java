@@ -46,7 +46,7 @@ public class CreateUserService {
 
             UserResponseDto userResponseDto = responseDto.getUsers().getFirst();
 
-            var userEntity = mapper.toEntity(userResponseDto);
+            final var userEntity = mapper.toEntity(userResponseDto);
             repository.save(userEntity);
 
             log.info("[UserEntity] - Usuário salvo no banco local. ID interno: {}", userEntity.getId());

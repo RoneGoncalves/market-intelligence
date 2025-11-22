@@ -22,9 +22,6 @@ public class TicketMedioInsightAdapter {
 
         TicketMedioResponseModel response = new TicketMedioResponseModel();
 
-        // ===========================================================
-        // 1) Preencher valores básicos formatados
-        // ===========================================================
         response.setDummyTotalCart(dummyTicket.getDummyTotalCarts());
         response.setDummyTicketMedio(moedaBR.format(dummyTicket.getDummyTicketMedio()));
         response.setDummyTicketMedioComDesconto(moedaBR.format(dummyTicket.getDummyTicketMedioDescontado()));
@@ -33,48 +30,32 @@ public class TicketMedioInsightAdapter {
 
         response.setLocalTotalCart(ticketLocal.getTotalCarts());
         response.setLocalTicketMedio(moedaBR.format(ticketLocal.getTicketMedioLocal()));
-        response.setLocalTicketMedioComDesconto(moedaBR.format(ticketLocal.getTicketMedioDescontadoLocal()));
+        response.setLocalTicketMedioDescontado(moedaBR.format(ticketLocal.getTicketMedioDescontadoLocal()));
         response.setLocalMaiorTicket(moedaBR.format(ticketLocal.getMaiorTicketLocal()));
         response.setLocalMenorTicket(moedaBR.format(ticketLocal.getMenorTicketLocal()));
 
-        // ===========================================================
-        // 2) Calcular diferenças percentuais
-        // ===========================================================
+        double pTicket = calculaPercentual(ticketLocal.getTicketMedioLocal(), dummyTicket.getDummyTicketMedio());
+        double pTicketDesc = calculaPercentual(ticketLocal.getTicketMedioDescontadoLocal(), dummyTicket.getDummyTicketMedioDescontado());
 
-        double p1 = calculaPercentual(ticketLocal.getTicketMedioLocal(), dummyTicket.getDummyTicketMedio());
-        double p2 = calculaPercentual(ticketLocal.getTicketMedioDescontadoLocal(), dummyTicket.getDummyTicketMedioDescontado());
-
-        String insight1 = gerarInsightComparativo(
+        String insightTicketMedio = gerarInsightComparativo(
                 ticketLocal.getTicketMedioLocal(),
                 dummyTicket.getDummyTicketMedio(),
                 "ticket médio",
-                p1
+                pTicket
         );
 
-        String insight2 = gerarInsightComparativo(
+        String insightTicketMedioDesc = gerarInsightComparativo(
                 ticketLocal.getTicketMedioDescontadoLocal(),
                 dummyTicket.getDummyTicketMedioDescontado(),
                 "ticket médio descontado",
-                p2
+                pTicketDesc
         );
 
-        // ===========================================================
-        // 3) Insight final: combinando os dois
-        // ===========================================================
-
-        String insightFinal =
-                "Comparação entre as bases:\n" +
-                        "- " + insight1 + "\n" +
-                        "- " + insight2;
-
-        response.setInsight(insightFinal);
+        response.setInsightTicketMedio(insightTicketMedio);
+        response.setInsightTicketMedioDescontado(insightTicketMedioDesc);
 
         return response;
     }
-
-    // ===========================================================
-    // MÉTODOS AUXILIARES
-    // ===========================================================
 
     private double calculaPercentual(double local, double dummy) {
         if (dummy == 0) return 0;
@@ -90,9 +71,9 @@ public class TicketMedioInsightAdapter {
         }
 
         if (local > dummy) {
-            return "O " + label + " **local** é **" + percentFormatado + "%** maior que o **dummy**.";
+            return "O " + label + " local é " + percentFormatado + "% maior que o dummy.";
         } else {
-            return "O " + label + " **dummy** é **" + percentFormatado + "%** maior que o **local**.";
+            return "O " + label + " dummy é " + percentFormatado + "% maior que o local.";
         }
     }
 }
