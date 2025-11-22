@@ -5,7 +5,6 @@ import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 @Service
