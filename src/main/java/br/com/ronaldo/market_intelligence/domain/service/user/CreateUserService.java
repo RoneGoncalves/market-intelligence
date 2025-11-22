@@ -36,7 +36,7 @@ public class CreateUserService {
 
         try {
             DummyUsersResponseDto responseDto = dummyJsonClient.searchUserByEmail(userRequestDto.getEmail());
-            log.info("[UserClient] - CLIENT RESPONSE DATA: {}: totalUsers={}", userRequestDto.getEmail(), responseDto.getTotal());
+            log.info("[UserClient] - CLIENT REQUEST DATA: {}", userRequestDto.getEmail());
 
             if (responseDto.getUsers() == null || responseDto.getUsers().isEmpty()) {
 
