@@ -10,7 +10,7 @@ public class TicketMedioLocalModel {
 
     public TicketMedioLocalModel() {}
 
-    public TicketMedioLocalModel(Integer totalCarts, Double ticketMedioLocal, Double ticketMedioDescontadoLocal, Double maiorTicketLocal, Double menorTicketLocal, String insight) {
+    public TicketMedioLocalModel(Integer totalCarts, Double ticketMedioLocal, Double ticketMedioDescontadoLocal, Double maiorTicketLocal, Double menorTicketLocal) {
         this.totalCarts = totalCarts;
         this.ticketMedioLocal = ticketMedioLocal;
         this.ticketMedioDescontadoLocal = ticketMedioDescontadoLocal;

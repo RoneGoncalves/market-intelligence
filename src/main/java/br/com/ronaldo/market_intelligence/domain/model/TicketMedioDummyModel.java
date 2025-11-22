@@ -9,7 +9,7 @@ public class TicketMedioDummyModel {
 
     public TicketMedioDummyModel() {}
 
-    public TicketMedioDummyModel(Integer dummyTotalCarts, Double dummyTicketMedio, Double dummyTicketMedioDescontado, Double dummyMaiorTicket, Double dummyMenorTicket, String insight) {
+    public TicketMedioDummyModel(Integer dummyTotalCarts, Double dummyTicketMedio, Double dummyTicketMedioDescontado, Double dummyMaiorTicket, Double dummyMenorTicket) {
         this.dummyTotalCarts = dummyTotalCarts;
         this.dummyTicketMedio = dummyTicketMedio;
         this.dummyTicketMedioDescontado = dummyTicketMedioDescontado;

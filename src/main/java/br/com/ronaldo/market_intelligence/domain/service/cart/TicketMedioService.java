@@ -7,7 +7,6 @@ import br.com.ronaldo.market_intelligence.domain.model.CartListModel;
 import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioAdapter;
 import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioLocalAdapter;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
-import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserService;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
