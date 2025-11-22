@@ -4,25 +4,18 @@ import br.com.ronaldo.market_intelligence.application.dto.DummyUsersResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
-import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioAdapter;
-import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioInsightAdapter;
-import br.com.ronaldo.market_intelligence.domain.adapter.TicketMedioLocalAdapter;
 import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.model.CartListModel;
 import br.com.ronaldo.market_intelligence.domain.model.CartModel;
 import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 
-import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioService;
-import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserService;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMapper;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.inject.Singleton;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,10 +23,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -67,10 +58,6 @@ class DummyJsonControllerTest {
 
     @MockBean
     private TicketMedioMapper ticketMedioMapper;
-
-    @InjectMocks
-    private TicketMedioService ticketMedioService;
-
 
     @Test
     void shouldCreateUserSuccessfully() throws Exception {
@@ -171,6 +158,69 @@ class DummyJsonControllerTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadGateway());
+    }
+
+    @Test
+    void shouldReturnTicketMedioSuccessfully() throws Exception {
+
+        CartModel cart1 = new CartModel(
+                1L,
+                100L,
+                Collections.emptyList(),
+                2,
+                4,
+                200.0,
+                180.0
+        );
+
+        CartModel cart2 = new CartModel(
+                2L,
+                200L,
+                Collections.emptyList(),
+                1,
+                2,
+                100.0,
+                95.0
+        );
+
+        CartListModel externalList = new CartListModel();
+        externalList.setCarts(Arrays.asList(cart1, cart2));
+
+
+        when(dummyJsonClient.getCarts()).thenReturn(externalList);
+
+        TicketMedioResponseDto responseDto = new TicketMedioResponseDto(
+                50,
+                "R$ 20.085,36",
+                "R$ 18.141,28",
+                "R$ 160.289,86",
+                "R$ 36,28",
+                12,
+                "R$ 37.754,73",
+                "R$ 33.686,79",
+                "R$ 160.289,86",
+                "R$ 36,28",
+                "O ticket médio local é 88,0% maior que o dummy.",
+                "O ticket médio descontado local é 85,7% maior que o dummy."
+        );
+
+        when(ticketMedioMapper.toDto(any()))
+                .thenReturn(responseDto);
+
+        mockMvc.perform(
+                        get("/api/ticket_medio")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.dummyTotalCart").value(50))
+                .andExpect(jsonPath("$.dummyTicketMedio").value("R$ 20.085,36"))
+                .andExpect(jsonPath("$.localTotalCart").value(12))
+                .andExpect(jsonPath("$.insightTicketMedio").value("O ticket médio local é 88,0% maior que o dummy."));
+
+
+        // ==== VERIFY =====
+
+        verify(dummyJsonClient, times(1)).getCarts();
     }
 
     @Test
