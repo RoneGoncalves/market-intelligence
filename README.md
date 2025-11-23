@@ -169,6 +169,14 @@ Baixar Documentação:
 
 http://localhost:8080/v3/api-docs.yaml
 
+Acessar banco de dados H2
+
+http://localhost:8080/h2
+
+usuário: admin
+
+senha: admin@123
+
 
 ---
 
