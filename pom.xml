@@ -193,6 +193,7 @@
                                 <exclude>**/config/**</exclude>
                                 <exclude>**/exception/**</exclude>
                                 <exclude>**/repository/**</exclude>
+                                <exclude>**/ApiExceptionHandler/**</exclude>
                                 <exclude>**/MarketIntelligenceApplication*</exclude>
                             </excludes>
                         </configuration>
