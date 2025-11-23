@@ -24,6 +24,7 @@
     </properties>
 
     <dependencies>
+
         <!-- WEB -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -107,11 +108,10 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
 
                     <annotationProcessorPaths>
-                        <!-- MapStruct Processor -->
                         <path>
                             <groupId>org.mapstruct</groupId>
                             <artifactId>mapstruct-processor</artifactId>
@@ -121,7 +121,7 @@
                 </configuration>
             </plugin>
 
-            <!-- JACOCO (versão simples e funcional) -->
+            <!-- JACOCO (Cobertura mínima + relatórios + exclusões) -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -129,7 +129,7 @@
 
                 <executions>
 
-                    <!-- Injeta o agente JaCoCo -->
+                    <!-- Ativa o agente antes dos testes -->
                     <execution>
                         <id>prepare-agent</id>
                         <goals>
@@ -137,20 +137,63 @@
                         </goals>
                     </execution>
 
-                    <!-- Gera o relatório -->
+                    <!-- Gera relatório HTML/XML -->
                     <execution>
                         <id>report</id>
                         <phase>verify</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
-
                         <configuration>
                             <excludes>
                                 <exclude>**/dto/**</exclude>
                                 <exclude>**/model/**</exclude>
+                                <exclude>**/entity/**</exclude>
                                 <exclude>**/config/**</exclude>
                                 <exclude>**/exception/**</exclude>
+                                <exclude>**/repository/**</exclude>
+                                <exclude>**/MarketIntelligenceApplication*</exclude>
+                            </excludes>
+                        </configuration>
+                    </execution>
+
+                    <!-- Regra de cobertura mínima -->
+                    <execution>
+                        <id>jacoco-check</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.80</minimum>
+                                        </limit>
+
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.70</minimum>
+                                        </limit>
+
+                                    </limits>
+                                </rule>
+                            </rules>
+
+                            <excludes>
+                                <exclude>**/dto/**</exclude>
+                                <exclude>**/model/**</exclude>
+                                <exclude>**/entity/**</exclude>
+                                <exclude>**/config/**</exclude>
+                                <exclude>**/exception/**</exclude>
+                                <exclude>**/repository/**</exclude>
+                                <exclude>**/MarketIntelligenceApplication*</exclude>
                             </excludes>
                         </configuration>
                     </execution>

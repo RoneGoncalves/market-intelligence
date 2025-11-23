@@ -65,7 +65,7 @@ public class DummyJsonController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/product")
+    @GetMapping("/product_selling_analyses")
     public ResponseEntity<BestSellingProductDto> getBestSellingProduct() {
         log.info("[DummyJsonController] [GET] Enviando request best selling product...");
 

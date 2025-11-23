@@ -6,6 +6,7 @@ import br.com.ronaldo.market_intelligence.domain.exception.CartsNotFoundExceptio
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.model.CartListModel;
 import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioService;
+import br.com.ronaldo.market_intelligence.infrastructure.cache.DummyCartCache;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.BestSellingProductMapper;
 import org.slf4j.Logger;
@@ -16,20 +17,24 @@ import org.springframework.stereotype.Service;
 public class BestSellingProductService {
     private static final Logger log = LoggerFactory.getLogger(BestSellingProductService.class);
 
-    private final DummyJsonClient dummyJsonClient;
     private final BestSellingProductAdapter bestSellingProductAdapter;
     private final BestSellingProductMapper bestSellingProductMapper;
+    private final DummyCartCache dummyCartCache;
 
-    public BestSellingProductService(DummyJsonClient dummyJsonClient, BestSellingProductAdapter bestSellingProductAdapter, BestSellingProductMapper bestSellingProductMapper) {
-        this.dummyJsonClient = dummyJsonClient;
+    public BestSellingProductService(BestSellingProductAdapter bestSellingProductAdapter,
+                                     BestSellingProductMapper bestSellingProductMapper,
+                                     DummyCartCache dummyCartCache) {
         this.bestSellingProductAdapter = bestSellingProductAdapter;
         this.bestSellingProductMapper = bestSellingProductMapper;
+        this.dummyCartCache = dummyCartCache;
     }
+
 
     public BestSellingProductDto execute() {
        try {
            log.info("[UserClient] - CLIENT REQUEST Buscando Lista de carts: ");
-           CartListModel cartListModel = dummyJsonClient.getCarts();
+           CartListModel cartListModel = dummyCartCache.getCarts();
+
 
            if (cartListModel.getCarts() == null || cartListModel.getCarts().isEmpty()) {
 

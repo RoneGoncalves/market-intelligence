@@ -26,7 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class CreateUserEntityServiceTest {
+class CreateUserServiceTest {
 
     @Mock
     private UserRepository repository;
@@ -52,24 +52,21 @@ class CreateUserEntityServiceTest {
         userResponseDto = new UserResponseDto();
         userResponseDto.setFirstName("John");
         userResponseDto.setLastName("Doe");
-        userResponseDto.setUsername("jonhdoe");
+        userResponseDto.setUsername("johndoe");
         userResponseDto.setExternalId(10L);
         userResponseDto.setAge(35);
         userResponseDto.setEmail(email);
         userResponseDto.setGender("male");
-
 
         dummyUsersResponseModel = new DummyUsersResponseModel();
         dummyUsersResponseModel.setUsers(Collections.singletonList(userResponseDto));
         dummyUsersResponseModel.setTotal(1);
         dummyUsersResponseModel.setSkip(0);
         dummyUsersResponseModel.setLimit(1);
-
     }
 
     @Test
-    void shouldReturnSuccessWithValidEmail() {
-
+    void shouldReturnSuccessWhenUserExistsInDummyJson() {
         UserRequestDto request = new UserRequestDto(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
@@ -87,27 +84,30 @@ class CreateUserEntityServiceTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenUserAlreadyExists() {
-
+    void shouldThrowExceptionWhenUserAlreadyExistsLocally() {
         UserRequestDto request = new UserRequestDto(email);
 
-        when(repository.findByEmail(email))
-                .thenReturn(Optional.of(new UserEntity()));
+        when(repository.findByEmail(email)).thenReturn(Optional.of(new UserEntity()));
 
         assertThrows(UserExistsException.class, () -> service.execute(request));
 
-        verify(dummyJsonClient, never()).searchUserByEmail(any());
+        verify(dummyJsonClient, never()).searchUserByEmail(anyString());
         verify(repository, never()).save(any());
     }
 
     @Test
-    void shouldThrowExceptionWhenUserNotFoundInExternalApi() {
-
+    void shouldThrowUserNotFoundExceptionWhenDummyJsonReturnsEmptyList() {
         UserRequestDto request = new UserRequestDto(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
-        when(dummyJsonClient.searchUserByEmail(email))
-                .thenReturn(new DummyUsersResponseModel(Collections.emptyList(), 0, 0, 0));
+
+        DummyUsersResponseModel emptyResponse = new DummyUsersResponseModel();
+        emptyResponse.setUsers(Collections.emptyList());
+        emptyResponse.setTotal(0);
+        emptyResponse.setLimit(0);
+        emptyResponse.setSkip(0);
+
+        when(dummyJsonClient.searchUserByEmail(email)).thenReturn(emptyResponse);
 
         assertThrows(UserNotFoundException.class, () -> service.execute(request));
 
@@ -115,8 +115,26 @@ class CreateUserEntityServiceTest {
     }
 
     @Test
-    void shouldThrowExternalApiExceptionWhenFeignFails() {
+    void shouldThrowUserNotFoundExceptionWhenDummyJsonReturnsNullUsers() {
+        UserRequestDto request = new UserRequestDto(email);
 
+        when(repository.findByEmail(email)).thenReturn(Optional.empty());
+
+        DummyUsersResponseModel responseWithNullList = new DummyUsersResponseModel();
+        responseWithNullList.setUsers(null);
+        responseWithNullList.setTotal(0);
+        responseWithNullList.setLimit(0);
+        responseWithNullList.setSkip(0);
+
+        when(dummyJsonClient.searchUserByEmail(email)).thenReturn(responseWithNullList);
+
+        assertThrows(UserNotFoundException.class, () -> service.execute(request));
+
+        verify(repository, never()).save(any());
+    }
+
+    @Test
+    void shouldThrowExternalApiExceptionWhenFeignThrowsError() {
         UserRequestDto request = new UserRequestDto(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
@@ -129,18 +147,17 @@ class CreateUserEntityServiceTest {
                 StandardCharsets.UTF_8
         );
 
-        FeignException fakeException =
-                FeignException.errorStatus(
-                        "searchUserByEmail",
-                        Response.builder()
-                                .status(500)
-                                .reason("Internal Server Error")
-                                .request(req)
-                                .headers(Collections.emptyMap())
-                                .build()
-                );
+        FeignException feignError = FeignException.errorStatus(
+                "searchUserByEmail",
+                Response.builder()
+                        .status(500)
+                        .reason("Internal Server Error")
+                        .headers(Collections.emptyMap())
+                        .request(req)
+                        .build()
+        );
 
-        when(dummyJsonClient.searchUserByEmail(email)).thenThrow(fakeException);
+        when(dummyJsonClient.searchUserByEmail(email)).thenThrow(feignError);
 
         assertThrows(ExternalApiException.class, () -> service.execute(request));
 

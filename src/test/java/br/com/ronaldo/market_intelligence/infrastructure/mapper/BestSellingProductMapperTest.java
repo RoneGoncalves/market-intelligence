@@ -1,7 +1,6 @@
 package br.com.ronaldo.market_intelligence.infrastructure.mapper;
 
 import br.com.ronaldo.market_intelligence.application.dto.BestSellingProductDto;
-import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.model.BestSellingProductModel;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
