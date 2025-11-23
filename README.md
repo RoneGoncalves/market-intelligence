@@ -20,7 +20,7 @@ Além disso, o projeto permite cadastrar usuários localmente com base nas infor
 
 ---
 
-## Arquitetura do projeto
+## 🏗️ Arquitetura do projeto
 ### Layered Architecture
 Arquitetura escolhida por ser a que já tenho experiênca.
 
@@ -80,11 +80,6 @@ src/main/java/br/com/ronaldo/market_intelligence
 └── MarketIntelligenceApplication
 ```
 
-
-
-
-
-
 ---
 
 ## 📡 Endpoints Principais
@@ -121,7 +116,6 @@ mvn test
 ### Gerar relatório do Jacoco:
 
 O relatório será gerado em: /target/site/jacoco/index.html
-
 
 ---
 
@@ -166,6 +160,14 @@ http://localhost:8080
 
 Swagger UI:  
 http://localhost:8080/swagger-ui/index.html
+
+Swagger Docs:
+
+http://localhost:8080/v3/api-docs
+
+Baixar Documentação:
+
+http://localhost:8080/v3/api-docs.yaml
 
 
 ---
