@@ -1,6 +1,6 @@
 # 📊 Market Intelligence
 
-Bem-vindo ao **Market Intelligence**, um sistema Java Spring Boot para análise de produtos, métricas de vendas e integração com APIs externas como **DummyJSON** e **FakeStore**.  
+Bem-vindo ao **Market Intelligence**, um sistema Java Spring Boot para análise de produtos, métricas de vendas e integração com APIs externas como **DummyJSON**.  
 O projeto utiliza uma arquitetura modular, boas práticas de código, testes automatizados, cache e tratamento global de exceções.
 
 ---
@@ -16,6 +16,10 @@ O objetivo do Market Intelligence é processar e analisar dados de produtos, car
 Além disso, o projeto permite cadastrar usuários localmente com base nas informações fornecidas pela API DummyJSON.
 
 ---
+
+## Arquitetura do projeto
+### Layered Architecture
+Arquitetura escolhida por ser a que já tenho experiênca.
 
 ## 🚀 Funcionalidades
 
