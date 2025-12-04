@@ -15,7 +15,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class DeleteUserServiceTest {
+public class DeleteUserServiceImpTest {
 
     @Mock
     private DummyJsonClient dummyJsonClient;
@@ -24,7 +24,7 @@ public class DeleteUserServiceTest {
     private UserRepository repository;
 
     @InjectMocks
-    private DeleteUserService service;
+    private DeleteUserServiceImp service;
 
     @BeforeEach
     void setUp() {

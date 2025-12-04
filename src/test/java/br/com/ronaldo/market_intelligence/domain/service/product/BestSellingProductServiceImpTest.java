@@ -25,7 +25,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class BestSellingProductServiceTest {
+public class BestSellingProductServiceImpTest {
 
     @Mock
     private BestSellingProductAdapter adapter;
@@ -37,7 +37,7 @@ public class BestSellingProductServiceTest {
     private DummyCartCache cache;
 
     @InjectMocks
-    private BestSellingProductService service;
+    private BestSellingProductServiceImp service;
 
     @BeforeEach
     void setUp() {

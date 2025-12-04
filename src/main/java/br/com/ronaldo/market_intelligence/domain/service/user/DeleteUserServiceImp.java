@@ -8,14 +8,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DeleteUserService {
+public class DeleteUserServiceImp {
 
-    private static final Logger log = LoggerFactory.getLogger(CreateUserService.class);
+    private static final Logger log = LoggerFactory.getLogger(CreateUserServiceImp.class);
 
     private final DummyJsonClient dummyJsonClient;
     private final UserRepository repository;
 
-    public DeleteUserService(DummyJsonClient dummyJsonClient, UserRepository repository) {
+    public DeleteUserServiceImp(DummyJsonClient dummyJsonClient, UserRepository repository) {
         this.dummyJsonClient = dummyJsonClient;
         this.repository = repository;
     }

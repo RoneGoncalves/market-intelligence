@@ -27,7 +27,7 @@ import java.util.Collections;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
-public class TicketMedioServiceTest {
+public class TicketMedioServiceImpTest {
 
     @Mock
     private DummyCartCache cache;
@@ -45,7 +45,7 @@ public class TicketMedioServiceTest {
     private TicketMedioMapper mapper;
 
     @InjectMocks
-    private TicketMedioService service;
+    private TicketMedioServiceImp service;
 
     @BeforeEach
     void setUp() {
@@ -106,6 +106,5 @@ public class TicketMedioServiceTest {
         verify(dummyAdapter, times(1)).calculaTicketMedio(cartList);
         verify(localAdapter, times(1)).calculaTicketMedioLocal(cartList);
         verify(insightAdapter, times(1)).calculaInsights(dummyResult, localResult);
-        verify(mapper, times(1)).toDto(responseModel);
     }
 }

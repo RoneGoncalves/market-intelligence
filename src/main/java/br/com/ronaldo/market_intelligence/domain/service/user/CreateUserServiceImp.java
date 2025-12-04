@@ -14,14 +14,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateUserService {
-    private static final Logger log = LoggerFactory.getLogger(CreateUserService.class);
+public class CreateUserServiceImp {
+    private static final Logger log = LoggerFactory.getLogger(CreateUserServiceImp.class);
 
     private final DummyJsonClient dummyJsonClient;
     private final UserMapper mapper;
     private final UserRepository repository;
 
-    public CreateUserService(DummyJsonClient dummyJsonClient, UserMapper mapper, UserRepository repository) {
+    public CreateUserServiceImp(DummyJsonClient dummyJsonClient, UserMapper mapper, UserRepository repository) {
         this.dummyJsonClient = dummyJsonClient;
         this.mapper = mapper;
         this.repository = repository;

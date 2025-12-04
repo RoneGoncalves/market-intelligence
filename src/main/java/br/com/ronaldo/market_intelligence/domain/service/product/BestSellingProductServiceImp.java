@@ -5,25 +5,23 @@ import br.com.ronaldo.market_intelligence.domain.adapter.BestSellingProductAdapt
 import br.com.ronaldo.market_intelligence.domain.exception.CartsNotFoundException;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.model.CartListModel;
-import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioService;
 import br.com.ronaldo.market_intelligence.infrastructure.cache.DummyCartCache;
-import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.BestSellingProductMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BestSellingProductService {
-    private static final Logger log = LoggerFactory.getLogger(BestSellingProductService.class);
+public class BestSellingProductServiceImp {
+    private static final Logger log = LoggerFactory.getLogger(BestSellingProductServiceImp.class);
 
     private final BestSellingProductAdapter bestSellingProductAdapter;
     private final BestSellingProductMapper bestSellingProductMapper;
     private final DummyCartCache dummyCartCache;
 
-    public BestSellingProductService(BestSellingProductAdapter bestSellingProductAdapter,
-                                     BestSellingProductMapper bestSellingProductMapper,
-                                     DummyCartCache dummyCartCache) {
+    public BestSellingProductServiceImp(BestSellingProductAdapter bestSellingProductAdapter,
+                                        BestSellingProductMapper bestSellingProductMapper,
+                                        DummyCartCache dummyCartCache) {
         this.bestSellingProductAdapter = bestSellingProductAdapter;
         this.bestSellingProductMapper = bestSellingProductMapper;
         this.dummyCartCache = dummyCartCache;

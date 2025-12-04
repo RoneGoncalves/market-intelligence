@@ -23,8 +23,6 @@ public class ApiExceptionHandler {
 
     private static final Logger log = LoggerFactory.getLogger(ApiExceptionHandler.class);
 
-    // -------------- EXCEÇÕES CUSTOMIZADAS DO DOMÍNIO ----------------
-
     @ExceptionHandler(UserExistsException.class)
     public ResponseEntity<?> handleUserExists(UserExistsException ex) {
         return ResponseEntity.status(HttpStatus.CONFLICT)
@@ -43,8 +41,6 @@ public class ApiExceptionHandler {
                 .body(Map.of("error", ex.getMessage()));
     }
 
-    // ----------------- ERROS DE VALIDAÇÃO --------------------------
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handleValidationErrors(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
@@ -57,8 +53,6 @@ public class ApiExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
-
-    // ----------- ERROS DE TIPO EM @PathVariable E @RequestParam -----
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<?> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
@@ -97,9 +91,6 @@ public class ApiExceptionHandler {
                         "message", "O parâmetro '" + ex.getVariableName() + "' é obrigatório na URL."
                 ));
     }
-
-
-    // ----------------- ERROS GENÉRICOS -----------------------------
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> handleRuntime(RuntimeException ex) {

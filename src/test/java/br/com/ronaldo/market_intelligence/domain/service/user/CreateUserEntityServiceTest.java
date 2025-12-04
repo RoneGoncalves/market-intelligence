@@ -26,7 +26,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class CreateUserServiceTest {
+class CreateUserServiceImpTest {
 
     @Mock
     private UserRepository repository;
@@ -38,7 +38,7 @@ class CreateUserServiceTest {
     private DummyJsonClient dummyJsonClient;
 
     @InjectMocks
-    private CreateUserService service;
+    private CreateUserServiceImp service;
 
     private final String email = "john@example.com";
 

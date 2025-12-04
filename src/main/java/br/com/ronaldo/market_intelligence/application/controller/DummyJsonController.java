@@ -2,13 +2,13 @@ package br.com.ronaldo.market_intelligence.application.controller;
 
 import br.com.ronaldo.market_intelligence.application.dto.BestSellingProductDto;
 import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
-import br.com.ronaldo.market_intelligence.domain.model.TicketMedioLocalModel;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
-import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioService;
-import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductService;
-import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserService;
-import br.com.ronaldo.market_intelligence.domain.service.user.DeleteUserService;
+import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioServiceImp;
+import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductServiceImp;
+import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserServiceImp;
+import br.com.ronaldo.market_intelligence.domain.service.user.DeleteUserServiceImp;
+import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.slf4j.Logger;
@@ -27,23 +27,25 @@ import org.springframework.web.bind.annotation.RestController;
 public class DummyJsonController {
     private static final Logger log = LoggerFactory.getLogger(DummyJsonController.class);
 
-    private final CreateUserService createUserService;
-    private final TicketMedioService ticketMedioService;
-    private final DeleteUserService deleteUserService;
-    private final BestSellingProductService productService;
+    private final CreateUserServiceImp createUserServiceImp;
+    private final TicketMedioServiceImp ticketMedioServiceImp;
+    private final DeleteUserServiceImp deleteUserServiceImp;
+    private final BestSellingProductServiceImp productService;
+    private final TicketMedioMapper mapper;
 
-    public DummyJsonController(CreateUserService createUserService, TicketMedioService ticketMedioService, DeleteUserService deleteUserService, BestSellingProductService productService) {
-        this.createUserService = createUserService;
-        this.ticketMedioService = ticketMedioService;
-        this.deleteUserService = deleteUserService;
+    public DummyJsonController(CreateUserServiceImp createUserServiceImp, TicketMedioServiceImp ticketMedioServiceImp, DeleteUserServiceImp deleteUserServiceImp, BestSellingProductServiceImp productService, TicketMedioMapper mapper) {
+        this.createUserServiceImp = createUserServiceImp;
+        this.ticketMedioServiceImp = ticketMedioServiceImp;
+        this.deleteUserServiceImp = deleteUserServiceImp;
         this.productService = productService;
+        this.mapper = mapper;
     }
 
     @PostMapping("/create_user")
     public ResponseEntity<UserResponseDto> criateUser(@Valid @RequestBody UserRequestDto request) {
         log.info("[UserController] [POST] REQUEST DATA EMAIL: {}", request.getEmail());
 
-        UserResponseDto response = createUserService.execute(request);
+        UserResponseDto response = createUserServiceImp.execute(request);
         return ResponseEntity.ok(response);
     }
 
@@ -51,7 +53,7 @@ public class DummyJsonController {
     public ResponseEntity<Void> deleteUser(@PathVariable @Positive(message = "O ID deve ser positivo") Long id) {
         log.info("[DummyJsonController] [DELETE] Solicitada exclusão do usuário ID: {}", id);
 
-        deleteUserService.excluirUsuario(id);
+        deleteUserServiceImp.excluirUsuario(id);
 
         return ResponseEntity.noContent().build();
     }
@@ -60,7 +62,9 @@ public class DummyJsonController {
     public ResponseEntity<TicketMedioResponseDto> getTicketMedio() {
         log.info("[DummyJsonController] [GET] Enviando request ticket médio...");
 
-        TicketMedioResponseDto response = ticketMedioService.execute();
+        final var ticketMedioResponse = ticketMedioServiceImp.execute();
+        final var response = mapper.toDto(ticketMedioResponse);
+
         return ResponseEntity.ok(response);
     }
 
