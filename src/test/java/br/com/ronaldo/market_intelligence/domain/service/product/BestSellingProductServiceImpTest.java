@@ -83,13 +83,12 @@ public class BestSellingProductServiceImpTest {
         when(adapter.calculaProdutoMaisVendidoDummy(cartList)).thenReturn(model);
         when(mapper.toDto(model)).thenReturn(dto);
 
-        BestSellingProductDto result = service.execute();
+        BestSellingProductModel result = service.execute();
 
         assertNotNull(result);
         assertEquals("Mouse", result.getProdutoMaisVendido());
         verify(cache, times(1)).getCarts();
         verify(adapter, times(1)).calculaProdutoMaisVendidoDummy(cartList);
-        verify(mapper, times(1)).toDto(model);
     }
 
     @Test

@@ -1,9 +1,9 @@
 package br.com.ronaldo.market_intelligence.domain.service.product;
 
-import br.com.ronaldo.market_intelligence.application.dto.BestSellingProductDto;
 import br.com.ronaldo.market_intelligence.domain.adapter.BestSellingProductAdapter;
 import br.com.ronaldo.market_intelligence.domain.exception.CartsNotFoundException;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
+import br.com.ronaldo.market_intelligence.domain.model.BestSellingProductModel;
 import br.com.ronaldo.market_intelligence.domain.model.CartListModel;
 import br.com.ronaldo.market_intelligence.infrastructure.cache.DummyCartCache;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.BestSellingProductMapper;
@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class BestSellingProductServiceImp {
+public class BestSellingProductServiceImp implements BestSellingProductService {
     private static final Logger log = LoggerFactory.getLogger(BestSellingProductServiceImp.class);
 
     private final BestSellingProductAdapter bestSellingProductAdapter;
@@ -28,7 +28,7 @@ public class BestSellingProductServiceImp {
     }
 
 
-    public BestSellingProductDto execute() {
+    public BestSellingProductModel execute() {
        try {
            log.info("[UserClient] - CLIENT REQUEST Buscando Lista de carts: ");
            CartListModel cartListModel = dummyCartCache.getCarts();
@@ -42,7 +42,8 @@ public class BestSellingProductServiceImp {
 
            final var bestSellingProductModel = bestSellingProductAdapter.calculaProdutoMaisVendidoDummy(cartListModel);
 
-           return bestSellingProductMapper.toDto(bestSellingProductModel);
+           log.info("[BestSellingProductService] - Informações de produtos mais e menos vendidos...");
+           return bestSellingProductModel;
 
        } catch (feign.FeignException error) {
            log.error("Erro ao consultar a API DummyJSON: status={} message={}",error.status(), error.getMessage());

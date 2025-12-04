@@ -1,9 +1,9 @@
 package br.com.ronaldo.market_intelligence.application.controller;
 
-import br.com.ronaldo.market_intelligence.application.dto.BestSellingProductDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
+import br.com.ronaldo.market_intelligence.domain.model.BestSellingProductModel;
 import br.com.ronaldo.market_intelligence.domain.model.TicketMedioResponseModel;
 import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioServiceImp;
 import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductServiceImp;
@@ -160,12 +160,12 @@ class DummyJsonControllerTest {
 
     @Test
     void shouldReturnBestSellingProductSuccessfully() throws Exception {
-        BestSellingProductDto dto = new BestSellingProductDto(
+        BestSellingProductModel model = new BestSellingProductModel(
                 "Produto A", 15,
                 "Produto B", 2
         );
 
-        when(productService.execute()).thenReturn(dto);
+        when(productService.execute()).thenReturn(model);
 
         mockMvc.perform(get("/api/product_selling_analyses"))
                 .andExpect(status().isOk())

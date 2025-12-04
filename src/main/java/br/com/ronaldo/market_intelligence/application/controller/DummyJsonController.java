@@ -8,6 +8,7 @@ import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioService
 import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductServiceImp;
 import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserServiceImp;
 import br.com.ronaldo.market_intelligence.domain.service.user.DeleteUserServiceImp;
+import br.com.ronaldo.market_intelligence.infrastructure.mapper.BestSellingProductMapper;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
@@ -31,14 +32,16 @@ public class DummyJsonController {
     private final TicketMedioServiceImp ticketMedioServiceImp;
     private final DeleteUserServiceImp deleteUserServiceImp;
     private final BestSellingProductServiceImp productService;
-    private final TicketMedioMapper mapper;
+    private final TicketMedioMapper ticketMedioMapper;
+    private final BestSellingProductMapper bestSellingProductMapper;
 
-    public DummyJsonController(CreateUserServiceImp createUserServiceImp, TicketMedioServiceImp ticketMedioServiceImp, DeleteUserServiceImp deleteUserServiceImp, BestSellingProductServiceImp productService, TicketMedioMapper mapper) {
+    public DummyJsonController(CreateUserServiceImp createUserServiceImp, TicketMedioServiceImp ticketMedioServiceImp, DeleteUserServiceImp deleteUserServiceImp, BestSellingProductServiceImp productService, TicketMedioMapper ticketMedioMapper, BestSellingProductMapper bestSellingProductMapper) {
         this.createUserServiceImp = createUserServiceImp;
         this.ticketMedioServiceImp = ticketMedioServiceImp;
         this.deleteUserServiceImp = deleteUserServiceImp;
         this.productService = productService;
-        this.mapper = mapper;
+        this.ticketMedioMapper = ticketMedioMapper;
+        this.bestSellingProductMapper = bestSellingProductMapper;
     }
 
     @PostMapping("/create_user")
@@ -63,7 +66,7 @@ public class DummyJsonController {
         log.info("[DummyJsonController] [GET] Enviando request ticket médio...");
 
         final var ticketMedioResponse = ticketMedioServiceImp.execute();
-        final var response = mapper.toDto(ticketMedioResponse);
+        final var response = ticketMedioMapper.toDto(ticketMedioResponse);
 
         return ResponseEntity.ok(response);
     }
@@ -72,7 +75,9 @@ public class DummyJsonController {
     public ResponseEntity<BestSellingProductDto> getBestSellingProduct() {
         log.info("[DummyJsonController] [GET] Enviando request best selling product...");
 
-        BestSellingProductDto response = productService.execute();
+        final var bestSellingProduct = productService.execute();
+        BestSellingProductDto response = bestSellingProductMapper.toDto(bestSellingProduct);
+
         return ResponseEntity.ok(response);
     }
 }
