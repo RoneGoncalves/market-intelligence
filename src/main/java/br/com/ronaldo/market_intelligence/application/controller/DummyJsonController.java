@@ -52,8 +52,8 @@ public class DummyJsonController {
         log.info("[UserController] [POST] REQUEST DATA EMAIL: {}", requestDto.getEmail());
 
         final var request = userMapper.toModel(requestDto);
-        final var serviceResponce = createUserServiceImp.execute(request);
-        CreateUserResponseDto response = userMapper.toDto(serviceResponce);
+        final var serviceResponse = createUserServiceImp.execute(request);
+        CreateUserResponseDto response = userMapper.toDto(serviceResponse);
         
         return ResponseEntity.ok(response);
     }
