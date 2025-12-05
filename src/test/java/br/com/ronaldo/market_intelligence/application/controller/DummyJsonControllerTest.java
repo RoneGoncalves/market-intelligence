@@ -1,7 +1,6 @@
 package br.com.ronaldo.market_intelligence.application.controller;
 
 import br.com.ronaldo.market_intelligence.application.dto.CreateUserRequestDto;
-import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.model.BestSellingProductModel;
 import br.com.ronaldo.market_intelligence.domain.model.CreateUserResponseModel;

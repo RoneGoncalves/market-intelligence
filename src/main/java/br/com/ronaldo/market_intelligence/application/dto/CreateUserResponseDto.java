@@ -1,10 +1,9 @@
 package br.com.ronaldo.market_intelligence.application.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
 @Schema(description = "Objeto user retornado")
-public class UserResponseDto {
+public class CreateUserResponseDto {
 
     @Schema()
     private Long externalId;
@@ -27,9 +26,9 @@ public class UserResponseDto {
     @Schema()
     private String gender;
 
-    public UserResponseDto() {}
+    public CreateUserResponseDto() {}
 
-    public UserResponseDto(Long externalId, String firstName, String lastName, String username, String email, String gender, Integer age) {
+    public CreateUserResponseDto(Long externalId, String firstName, String lastName, String username, String email, String gender, Integer age) {
         this.externalId = externalId;
         this.firstName = firstName;
         this.lastName = lastName;

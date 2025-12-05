@@ -1,9 +1,9 @@
 package br.com.ronaldo.market_intelligence.application.controller;
 
 import br.com.ronaldo.market_intelligence.application.dto.BestSellingProductDto;
+import br.com.ronaldo.market_intelligence.application.dto.CreateUserResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
 import br.com.ronaldo.market_intelligence.application.dto.CreateUserRequestDto;
-import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioServiceImp;
 import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductServiceImp;
 import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserServiceImp;
@@ -48,12 +48,12 @@ public class DummyJsonController {
     }
 
     @PostMapping("/create_user")
-    public ResponseEntity<UserResponseDto> criateUser(@Valid @RequestBody CreateUserRequestDto requestDto) {
+    public ResponseEntity<CreateUserResponseDto> criateUser(@Valid @RequestBody CreateUserRequestDto requestDto) {
         log.info("[UserController] [POST] REQUEST DATA EMAIL: {}", requestDto.getEmail());
 
         final var request = userMapper.toModel(requestDto);
         final var serviceResponce = createUserServiceImp.execute(request);
-        UserResponseDto response = userMapper.toDto(serviceResponce);
+        CreateUserResponseDto response = userMapper.toDto(serviceResponce);
         
         return ResponseEntity.ok(response);
     }

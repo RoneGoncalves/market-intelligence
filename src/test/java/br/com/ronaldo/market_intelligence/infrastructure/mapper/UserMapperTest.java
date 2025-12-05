@@ -1,6 +1,5 @@
 package br.com.ronaldo.market_intelligence.infrastructure.mapper;
 
-import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.model.CreateUserResponseModel;
 import org.junit.jupiter.api.BeforeEach;

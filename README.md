@@ -47,37 +47,70 @@ Arquitetura escolhida por ser a que já tenho experiênca.
 ## 🏗️ Estrutura do Projeto
 
 ```text
-src/main/java/br/com/ronaldo/market_intelligence
+📁 market-intelligence
+└── 📁 src
+└── 📁 main
+├── 📁 java
+│ └── 📁 br.com.ronaldo.market_intelligence
+│ ├── 📁 application
+│ │ ├── 📁 controller
+│ │ │ └── DummyJsonController
+│ │ ├── 📁 dto
+│ │ │ ├── BestSellingProductDto
+│ │ │ ├── CreateUserRequestDto
+│ │ │ ├── TicketMedioResponseDto
+│ │ │ └── CreateUserResponseDto
+│ │ └── ApiExceptionHandler
+│ │
+│ ├── 📁 domain
+│ │ ├── 📁 adapter
+│ │ ├── 📁 entity
+│ │ │ └── UserEntity
+│ │ ├── 📁 exception
+│ │ │ ├── CartsNotFoundException
+│ │ │ ├── ExternalApiException
+│ │ │ ├── UserExistsException
+│ │ │ └── UserNotFoundException
+│ │ ├── 📁 model
+│ │ │ ├── BestSellingProductModel
+│ │ │ ├── CartListModel
+│ │ │ ├── CartModel
+│ │ │ ├── CreateUserRequestModel
+│ │ │ ├── CreateUserResponseModel
+│ │ │ ├── DummyUsersResponseModel
+│ │ │ ├── ProductModel
+│ │ │ ├── TicketMedioDummyModel
+│ │ │ ├── TicketMedioLocalModel
+│ │ │ └── TicketMedioResponseModel
+│ │ └── 📁 repository
+│ │ └── UserRepository
+│ │
+│ ├── 📁 service
+│ │ ├── 📁 cart
+│ │ │ └── TicketMedioService & TicketMedioServiceImp
+│ │ ├── 📁 product
+│ │ │ └── BestSellingProductService & Impl
+│ │ └── 📁 user
+│ │ ├── CreateUserService & CreateUserServiceImp
+│ │ └── DeleteUserService & DeleteUserServiceImp
+│ │
+│ ├── 📁 infrastructure
+│ │ ├── 📁 cache
+│ │ │ └── DummyCartCache
+│ │ ├── 📁 client
+│ │ ├── 📁 mapper
+│ │ │ ├── BestSellingProductMapper
+│ │ │ ├── TicketMedioMapper
+│ │ │ └── UserMapper
+│ │ └── 📁 repository
+│ │ └── UserJpaRepository
+│ │
+│ └── MarketIntelligenceApplication
 │
-├── application
-│   ├── controller
-│   │   └── DummyJsonController
-│   ├── dto
-│   │   ├── BestSellingProductDto
-│   │   ├── TicketMedioResponseDto
-│   │   ├── UserRequestDto
-│   │   └── UserResponseDto
-│   └── ApiExceptionHandler
-│
-├── domain
-│   ├── adapter
-│   ├── entity
-│   ├── exception
-│   ├── model
-│   └── repository
-│
-├── service
-│   ├── cart
-│   ├── product
-│   └── user
-│
-├── infrastructure
-│   ├── cache
-│   ├── client
-│   ├── mapper
-│   └── repository
-│
-└── MarketIntelligenceApplication
+└── 📁 resources
+├── application.properties
+├── data.sql
+└── schema.sql
 ```
 
 ---
