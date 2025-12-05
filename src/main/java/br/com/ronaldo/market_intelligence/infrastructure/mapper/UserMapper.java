@@ -1,7 +1,10 @@
 package br.com.ronaldo.market_intelligence.infrastructure.mapper;
 
+import br.com.ronaldo.market_intelligence.application.dto.CreateUserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserRequestModel;
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserResponseModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
@@ -9,5 +12,9 @@ import org.mapstruct.Mapping;
 public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
-    UserEntity toEntity(UserResponseDto responseDto);
+    UserEntity toEntity(CreateUserResponseModel responseModel);
+
+    UserResponseDto toDto(CreateUserResponseModel responseModel);
+
+    CreateUserRequestModel toModel(CreateUserRequestDto requestDto);
 }

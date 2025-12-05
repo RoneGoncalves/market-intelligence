@@ -16,6 +16,7 @@ public class UserEntity {
     private Long id;
 
     private Integer age;
+
     private String email;
 
     @Column(name = "external_id")
@@ -25,6 +26,7 @@ public class UserEntity {
     private String firstName;
 
     private String lastName;
+
     private String gender;
 
     @Column(name = "user_name")

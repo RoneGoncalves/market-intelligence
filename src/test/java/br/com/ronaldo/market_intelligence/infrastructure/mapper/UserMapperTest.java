@@ -2,6 +2,7 @@ package br.com.ronaldo.market_intelligence.infrastructure.mapper;
 
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserResponseModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mapstruct.factory.Mappers;
@@ -20,7 +21,7 @@ class UserMapperTest {
     @Test
     void shouldMapDtoToEntityCorrectly() {
 
-        UserResponseDto dto = new UserResponseDto(
+        CreateUserResponseModel model = new CreateUserResponseModel(
                 10L,
                 "John",
                 "Doe",
@@ -30,19 +31,19 @@ class UserMapperTest {
                 28
         );
 
-        UserEntity entity = mapper.toEntity(dto);
+        UserEntity entity = mapper.toEntity(model);
 
         assertNotNull(entity);
         assertNull(entity.getId());
 
-        assertEquals(dto.getFirstName(), entity.getFirstName());
-        assertEquals(dto.getLastName(), entity.getLastName());
-        assertEquals(dto.getUsername(), entity.getUsername());
-        assertEquals(dto.getEmail(), entity.getEmail());
-        assertEquals(dto.getGender(), entity.getGender());
-        assertEquals(dto.getAge(), entity.getAge());
+        assertEquals(model.getFirstName(), entity.getFirstName());
+        assertEquals(model.getLastName(), entity.getLastName());
+        assertEquals(model.getUsername(), entity.getUsername());
+        assertEquals(model.getEmail(), entity.getEmail());
+        assertEquals(model.getGender(), entity.getGender());
+        assertEquals(model.getAge(), entity.getAge());
 
-        assertEquals(dto.getExternalId(), entity.getExternalId());
+        assertEquals(model.getExternalId(), entity.getExternalId());
     }
 
     @Test
@@ -54,16 +55,16 @@ class UserMapperTest {
     @Test
     void shouldHandleNullFields() {
 
-        UserResponseDto dto = new UserResponseDto();
-        dto.setExternalId(null);
-        dto.setFirstName(null);
-        dto.setLastName(null);
-        dto.setUsername(null);
-        dto.setEmail(null);
-        dto.setGender(null);
-        dto.setAge(null);
+        CreateUserResponseModel model = new CreateUserResponseModel();
+        model.setExternalId(null);
+        model.setFirstName(null);
+        model.setLastName(null);
+        model.setUsername(null);
+        model.setEmail(null);
+        model.setGender(null);
+        model.setAge(null);
 
-        UserEntity entity = mapper.toEntity(dto);
+        UserEntity entity = mapper.toEntity(model);
 
         assertNotNull(entity);
         assertNull(entity.getId());

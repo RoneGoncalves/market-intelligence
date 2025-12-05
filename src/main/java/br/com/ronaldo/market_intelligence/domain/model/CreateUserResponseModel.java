@@ -1,35 +1,28 @@
-package br.com.ronaldo.market_intelligence.application.dto;
+package br.com.ronaldo.market_intelligence.domain.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(description = "Objeto user retornado")
-public class UserResponseDto {
+public class CreateUserResponseModel {
 
-    @Schema()
+    @JsonProperty("id")
     private Long externalId;
 
-    @Schema()
     private String firstName;
 
-    @Schema()
     private String lastName;
 
-    @Schema()
     private String username;
 
-    @Schema()
     private String email;
 
-    @Schema()
     private Integer age;
 
-    @Schema()
     private String gender;
 
-    public UserResponseDto() {}
+    public CreateUserResponseModel() {}
 
-    public UserResponseDto(Long externalId, String firstName, String lastName, String username, String email, String gender, Integer age) {
+    public CreateUserResponseModel(Long externalId, String firstName, String lastName, String username, String email, String gender, Integer age) {
         this.externalId = externalId;
         this.firstName = firstName;
         this.lastName = lastName;

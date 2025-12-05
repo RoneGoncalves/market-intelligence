@@ -1,12 +1,12 @@
 package br.com.ronaldo.market_intelligence.domain.service.user;
 
-import br.com.ronaldo.market_intelligence.domain.model.DummyUsersResponseModel;
-import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
-import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserRequestModel;
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserResponseModel;
 import br.com.ronaldo.market_intelligence.domain.entity.UserEntity;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserExistsException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserNotFoundException;
+import br.com.ronaldo.market_intelligence.domain.model.DummyUsersResponseModel;
 import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
@@ -42,24 +42,24 @@ class CreateUserServiceImpTest {
 
     private final String email = "john@example.com";
 
-    private UserResponseDto userResponseDto;
+    private CreateUserResponseModel createUserResponseModel;
     private DummyUsersResponseModel dummyUsersResponseModel;
 
     @BeforeEach
     void setup() {
         MockitoAnnotations.openMocks(this);
 
-        userResponseDto = new UserResponseDto();
-        userResponseDto.setFirstName("John");
-        userResponseDto.setLastName("Doe");
-        userResponseDto.setUsername("johndoe");
-        userResponseDto.setExternalId(10L);
-        userResponseDto.setAge(35);
-        userResponseDto.setEmail(email);
-        userResponseDto.setGender("male");
+        createUserResponseModel = new CreateUserResponseModel();
+        createUserResponseModel.setFirstName("John");
+        createUserResponseModel.setLastName("Doe");
+        createUserResponseModel.setUsername("johndoe");
+        createUserResponseModel.setExternalId(10L);
+        createUserResponseModel.setAge(35);
+        createUserResponseModel.setEmail(email);
+        createUserResponseModel.setGender("male");
 
         dummyUsersResponseModel = new DummyUsersResponseModel();
-        dummyUsersResponseModel.setUsers(Collections.singletonList(userResponseDto));
+        dummyUsersResponseModel.setUsers(Collections.singletonList(createUserResponseModel));
         dummyUsersResponseModel.setTotal(1);
         dummyUsersResponseModel.setSkip(0);
         dummyUsersResponseModel.setLimit(1);
@@ -67,13 +67,13 @@ class CreateUserServiceImpTest {
 
     @Test
     void shouldReturnSuccessWhenUserExistsInDummyJson() {
-        UserRequestDto request = new UserRequestDto(email);
+        CreateUserRequestModel request = new CreateUserRequestModel(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
         when(dummyJsonClient.searchUserByEmail(email)).thenReturn(dummyUsersResponseModel);
-        when(mapper.toEntity(userResponseDto)).thenReturn(new UserEntity());
+        when(mapper.toEntity(createUserResponseModel)).thenReturn(new UserEntity());
 
-        UserResponseDto result = service.execute(request);
+        CreateUserResponseModel result = service.execute(request);
 
         assertNotNull(result);
         assertEquals(email, result.getEmail());
@@ -85,7 +85,7 @@ class CreateUserServiceImpTest {
 
     @Test
     void shouldThrowExceptionWhenUserAlreadyExistsLocally() {
-        UserRequestDto request = new UserRequestDto(email);
+        CreateUserRequestModel request = new CreateUserRequestModel(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.of(new UserEntity()));
 
@@ -97,7 +97,7 @@ class CreateUserServiceImpTest {
 
     @Test
     void shouldThrowUserNotFoundExceptionWhenDummyJsonReturnsEmptyList() {
-        UserRequestDto request = new UserRequestDto(email);
+        CreateUserRequestModel request = new CreateUserRequestModel(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
 
@@ -116,7 +116,7 @@ class CreateUserServiceImpTest {
 
     @Test
     void shouldThrowUserNotFoundExceptionWhenDummyJsonReturnsNullUsers() {
-        UserRequestDto request = new UserRequestDto(email);
+        CreateUserRequestModel request = new CreateUserRequestModel(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
 
@@ -135,7 +135,7 @@ class CreateUserServiceImpTest {
 
     @Test
     void shouldThrowExternalApiExceptionWhenFeignThrowsError() {
-        UserRequestDto request = new UserRequestDto(email);
+        CreateUserRequestModel request = new CreateUserRequestModel(email);
 
         when(repository.findByEmail(email)).thenReturn(Optional.empty());
 

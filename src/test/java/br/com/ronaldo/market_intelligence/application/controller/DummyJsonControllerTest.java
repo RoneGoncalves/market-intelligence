@@ -1,9 +1,10 @@
 package br.com.ronaldo.market_intelligence.application.controller;
 
-import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
+import br.com.ronaldo.market_intelligence.application.dto.CreateUserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.model.BestSellingProductModel;
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserResponseModel;
 import br.com.ronaldo.market_intelligence.domain.model.TicketMedioResponseModel;
 import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioServiceImp;
 import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductServiceImp;
@@ -53,8 +54,8 @@ class DummyJsonControllerTest {
     @Test
     void shouldCreateUserSuccessfully() throws Exception {
         String email = "john@example.com";
-        UserRequestDto request = new UserRequestDto(email);
-        UserResponseDto response = new UserResponseDto(
+        CreateUserRequestDto request = new CreateUserRequestDto(email);
+        CreateUserResponseModel response = new CreateUserResponseModel(
                 10L, "John", "Doe", "johndoe", email, "male", 45
         );
 
@@ -74,7 +75,7 @@ class DummyJsonControllerTest {
     @Test
     void shouldReturn409WhenUserAlreadyExists() throws Exception {
         String email = "john@example.com";
-        UserRequestDto request = new UserRequestDto(email);
+        CreateUserRequestDto request = new CreateUserRequestDto(email);
 
         when(createUserServiceImp.execute(any()))
                 .thenThrow(new ExternalApiException("User exists", null));
@@ -88,7 +89,7 @@ class DummyJsonControllerTest {
     @Test
     void shouldReturn502WhenExternalApiFails() throws Exception {
         String email = "john@example.com";
-        UserRequestDto request = new UserRequestDto(email);
+        CreateUserRequestDto request = new CreateUserRequestDto(email);
 
         when(createUserServiceImp.execute(any()))
                 .thenThrow(new ExternalApiException("dummy fail", null));

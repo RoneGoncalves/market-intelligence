@@ -5,16 +5,16 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 
 @Schema(description = "Busca por um usuário expecífico no DummyJSON")
-public class UserRequestDto {
+public class CreateUserRequestDto {
 
     @Email(message = "Email inválido")
     @NotBlank(message = "email é obrigatório")
     @Schema(description = "email do usuário buscado")
     private String email;
 
-    public UserRequestDto() {}
+    public CreateUserRequestDto() {}
 
-    public UserRequestDto(String email) {
+    public CreateUserRequestDto(String email) {
         this.email = email;
     }
 

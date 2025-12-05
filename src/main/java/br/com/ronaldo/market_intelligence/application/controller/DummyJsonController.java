@@ -2,7 +2,7 @@ package br.com.ronaldo.market_intelligence.application.controller;
 
 import br.com.ronaldo.market_intelligence.application.dto.BestSellingProductDto;
 import br.com.ronaldo.market_intelligence.application.dto.TicketMedioResponseDto;
-import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
+import br.com.ronaldo.market_intelligence.application.dto.CreateUserRequestDto;
 import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.service.cart.TicketMedioServiceImp;
 import br.com.ronaldo.market_intelligence.domain.service.product.BestSellingProductServiceImp;
@@ -10,6 +10,7 @@ import br.com.ronaldo.market_intelligence.domain.service.user.CreateUserServiceI
 import br.com.ronaldo.market_intelligence.domain.service.user.DeleteUserServiceImp;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.BestSellingProductMapper;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.TicketMedioMapper;
+import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import org.slf4j.Logger;
@@ -34,21 +35,26 @@ public class DummyJsonController {
     private final BestSellingProductServiceImp productService;
     private final TicketMedioMapper ticketMedioMapper;
     private final BestSellingProductMapper bestSellingProductMapper;
+    private final UserMapper userMapper;
 
-    public DummyJsonController(CreateUserServiceImp createUserServiceImp, TicketMedioServiceImp ticketMedioServiceImp, DeleteUserServiceImp deleteUserServiceImp, BestSellingProductServiceImp productService, TicketMedioMapper ticketMedioMapper, BestSellingProductMapper bestSellingProductMapper) {
+    public DummyJsonController(CreateUserServiceImp createUserServiceImp, TicketMedioServiceImp ticketMedioServiceImp, DeleteUserServiceImp deleteUserServiceImp, BestSellingProductServiceImp productService, TicketMedioMapper ticketMedioMapper, BestSellingProductMapper bestSellingProductMapper, UserMapper userMapper) {
         this.createUserServiceImp = createUserServiceImp;
         this.ticketMedioServiceImp = ticketMedioServiceImp;
         this.deleteUserServiceImp = deleteUserServiceImp;
         this.productService = productService;
         this.ticketMedioMapper = ticketMedioMapper;
         this.bestSellingProductMapper = bestSellingProductMapper;
+        this.userMapper = userMapper;
     }
 
     @PostMapping("/create_user")
-    public ResponseEntity<UserResponseDto> criateUser(@Valid @RequestBody UserRequestDto request) {
-        log.info("[UserController] [POST] REQUEST DATA EMAIL: {}", request.getEmail());
+    public ResponseEntity<UserResponseDto> criateUser(@Valid @RequestBody CreateUserRequestDto requestDto) {
+        log.info("[UserController] [POST] REQUEST DATA EMAIL: {}", requestDto.getEmail());
 
-        UserResponseDto response = createUserServiceImp.execute(request);
+        final var request = userMapper.toModel(requestDto);
+        final var serviceResponce = createUserServiceImp.execute(request);
+        UserResponseDto response = userMapper.toDto(serviceResponce);
+        
         return ResponseEntity.ok(response);
     }
 

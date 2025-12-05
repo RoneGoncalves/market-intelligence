@@ -1,11 +1,11 @@
 package br.com.ronaldo.market_intelligence.domain.service.user;
 
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserResponseModel;
 import br.com.ronaldo.market_intelligence.domain.model.DummyUsersResponseModel;
-import br.com.ronaldo.market_intelligence.application.dto.UserRequestDto;
-import br.com.ronaldo.market_intelligence.application.dto.UserResponseDto;
 import br.com.ronaldo.market_intelligence.domain.exception.ExternalApiException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserExistsException;
 import br.com.ronaldo.market_intelligence.domain.exception.UserNotFoundException;
+import br.com.ronaldo.market_intelligence.domain.model.CreateUserRequestModel;
 import br.com.ronaldo.market_intelligence.domain.repository.UserRepository;
 import br.com.ronaldo.market_intelligence.infrastructure.client.DummyJsonClient;
 import br.com.ronaldo.market_intelligence.infrastructure.mapper.UserMapper;
@@ -14,7 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CreateUserServiceImp {
+public class CreateUserServiceImp implements CreateUserService {
     private static final Logger log = LoggerFactory.getLogger(CreateUserServiceImp.class);
 
     private final DummyJsonClient dummyJsonClient;
@@ -27,31 +27,31 @@ public class CreateUserServiceImp {
         this.repository = repository;
     }
 
-    public UserResponseDto execute(UserRequestDto userRequestDto) {
+    public CreateUserResponseModel execute(CreateUserRequestModel createUserRequestModel) {
 
-        if (repository.findByEmail(userRequestDto.getEmail()).isPresent()) {
-            log.warn("[CreateUserService] - Usuário já cadastrado localmente para o email: {}", userRequestDto.getEmail());
-            throw new UserExistsException("Usuário já cadastrado localmente para o email: " + userRequestDto.getEmail());
+        if (repository.findByEmail(createUserRequestModel.getEmail()).isPresent()) {
+            log.warn("[CreateUserService] - Usuário já cadastrado localmente para o email: {}", createUserRequestModel.getEmail());
+            throw new UserExistsException("Usuário já cadastrado localmente para o email: " + createUserRequestModel.getEmail());
         }
 
         try {
-            DummyUsersResponseModel responseDto = dummyJsonClient.searchUserByEmail(userRequestDto.getEmail());
-            log.info("[UserClient] - CLIENT REQUEST DATA: {}", userRequestDto.getEmail());
+            DummyUsersResponseModel responseModel = dummyJsonClient.searchUserByEmail(createUserRequestModel.getEmail());
+            log.info("[UserClient] - CLIENT REQUEST DATA: {}", createUserRequestModel.getEmail());
 
-            if (responseDto.getUsers() == null || responseDto.getUsers().isEmpty()) {
+            if (responseModel.getUsers() == null || responseModel.getUsers().isEmpty()) {
 
-                log.warn("[UserClient] - Nenhum usuário cadastrado no DummyJSON para o email: {}", userRequestDto.getEmail());
-                throw new UserNotFoundException("Nenhum usuário cadastrado para o email: " + userRequestDto.getEmail());
+                log.warn("[UserClient] - Nenhum usuário cadastrado no DummyJSON para o email: {}", createUserRequestModel.getEmail());
+                throw new UserNotFoundException("Nenhum usuário cadastrado para o email: " + createUserRequestModel.getEmail());
             }
 
-            UserResponseDto userResponseDto = responseDto.getUsers().getFirst();
+            final var userResponseModel = responseModel.getUsers().getFirst();
 
-            final var userEntity = mapper.toEntity(userResponseDto);
+            final var userEntity = mapper.toEntity(userResponseModel);
             repository.save(userEntity);
 
             log.info("[UserEntity] - Usuário salvo no banco local. ID interno: {}", userEntity.getId());
 
-            return userResponseDto;
+            return userResponseModel;
 
         } catch (feign.FeignException error) {
             log.error("Erro ao consultar a API DummyJSON: status={} message={}",error.status(), error.getMessage());
